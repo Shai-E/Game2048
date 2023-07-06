@@ -1,0 +1,5 @@
+{
+  "session": ["userSessionData"],
+  "default": [],
+  "device": ["savedLanguage"]
+}

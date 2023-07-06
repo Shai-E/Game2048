@@ -1,44 +1,66 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Button, Text, View} from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import RNRestart from 'react-native-restart';
+import {I18nextProvider} from 'react-i18next';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {AppContainer} from './components/Reusable/reusable';
+import i18n from './services/localization/i18n.config';
+import {determineRtl} from './services/localization/appDirection/setAppDirection';
+import store from './store/store';
+import {Provider} from 'react-redux';
 
-const Tab = createBottomTabNavigator();
+import {initApp} from './services/initApp/initApp';
 
-function MyTabs() {
+initApp();
+
+import {BottomTabs} from './navigation/BottomTabNavigation';
+import {createNavigationScreen} from './services/utils/navigationHelpers/createNavigationScreen';
+
+const MainNavigator = createNativeStackNavigator();
+
+const stacks = {
+  user: BottomTabs,
+  // auth: BottomTabs
+};
+
+const createUserStack = stacks =>
+  createNavigationScreen(stacks, MainNavigator.Screen);
+
+const AppNavigator = () => {
+  const UserStack = createUserStack(stacks);
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
+    <MainNavigator.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: true, // Enable animations
+        animationTypeForReplace: 'push',
+      }}>
+      <MainNavigator.Group screenOptions={{headerShown: false}}>
+        {UserStack}
+      </MainNavigator.Group>
+      {/* <MainNavigator.Screen name={'drawer'} component={RightDrawer} /> */}
+    </MainNavigator.Navigator>
   );
-}
+};
 
-const Stack = createNativeStackNavigator();
-
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-      <Button title="restart" onPress={() => RNRestart.restart()} />
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Settings Screen</Text>
-    </View>
-  );
-}
+// TODO: install switchElement & finish app initialization including language picker
 
 export default function App() {
+  useEffect(() => {
+    i18n && determineRtl(i18n);
+  }, [i18n]);
+
   return (
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
+    <Provider store={store}>
+      <I18nextProvider i18n={i18n}>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <AppContainer>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+          </AppContainer>
+        </GestureHandlerRootView>
+      </I18nextProvider>
+    </Provider>
   );
 }

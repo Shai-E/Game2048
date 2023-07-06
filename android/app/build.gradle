@@ -1,5 +1,14 @@
+// react-native-config configuration
+project.ext.envConfigFiles = [
+  release: "env/psy.env",
+  dev: ".env",
+];
+
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+
+// react-native-config configuration
+apply from: project(":react-native-config").projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
 
@@ -100,6 +109,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        resValue "string", "build_config_package", "com.trading" // react-native-config configuration
     }
 
     splits {
@@ -154,8 +164,11 @@ dependencies {
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 
-    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
+    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}"){
+    exclude group:'com.facebook.fbjni'
+  }
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+        exclude group:'com.facebook.flipper'
         exclude group:'com.squareup.okhttp3', module:'okhttp'
     }
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,9 +12,17 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1510D4B4CBF24B91A5BB41A5 /* Ubuntu-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3AAA6C31631D4D059C1F1299 /* Ubuntu-Bold.ttf */; };
+		31E8577D4D5847C690C5DB65 /* Assistant-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3AC51694A92649B6AD8D6741 /* Assistant-Light.ttf */; };
+		37BB606787B74E2F87DD0BDA /* Ubuntu-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 608ED51CA40E4F5E978F7EC3 /* Ubuntu-Light.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-trading-tradingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-trading-tradingTests.a */; };
+		7F1148DB238B49BB9E7453A2 /* Assistant-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2C69791766794F68A0F1E388 /* Assistant-Medium.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B794D0EA2A3ECDC600EA42B5 /* libreact-native-restart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B794D0E92A3ECDC600EA42B5 /* libreact-native-restart.a */; };
+		BE35ED6CD67947588113769F /* Ubuntu-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A4608216F0F491598824AB2 /* Ubuntu-Regular.ttf */; };
+		BE99A7728884401883CAA114 /* Assistant-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1BA91748EFD5485B8A62DAF0 /* Assistant-Regular.ttf */; };
+		D02D31FD27EE4E78A3496F86 /* Assistant-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C23700552BFA4AB680DC7D7C /* Assistant-Bold.ttf */; };
+		D636880226AE4ADEACEB3C07 /* Ubuntu-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81CB23B0C2544900B7F581B0 /* Ubuntu-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,14 +53,22 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = trading/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = trading/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-trading-tradingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-trading-tradingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BA91748EFD5485B8A62DAF0 /* Assistant-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Assistant-Regular.ttf"; path = "../assets/fonts/hebrew/Assistant-Regular.ttf"; sourceTree = "<group>"; };
+		2C69791766794F68A0F1E388 /* Assistant-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Assistant-Medium.ttf"; path = "../assets/fonts/hebrew/Assistant-Medium.ttf"; sourceTree = "<group>"; };
+		3AAA6C31631D4D059C1F1299 /* Ubuntu-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Ubuntu-Bold.ttf"; path = "../assets/fonts/english/Ubuntu-Bold.ttf"; sourceTree = "<group>"; };
+		3AC51694A92649B6AD8D6741 /* Assistant-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Assistant-Light.ttf"; path = "../assets/fonts/hebrew/Assistant-Light.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-trading.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-trading.debug.xcconfig"; path = "Target Support Files/Pods-trading/Pods-trading.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-trading.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-trading.release.xcconfig"; path = "Target Support Files/Pods-trading/Pods-trading.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-trading-tradingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-trading-tradingTests.debug.xcconfig"; path = "Target Support Files/Pods-trading-tradingTests/Pods-trading-tradingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-trading.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-trading.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		608ED51CA40E4F5E978F7EC3 /* Ubuntu-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Ubuntu-Light.ttf"; path = "../assets/fonts/english/Ubuntu-Light.ttf"; sourceTree = "<group>"; };
+		6A4608216F0F491598824AB2 /* Ubuntu-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Ubuntu-Regular.ttf"; path = "../assets/fonts/english/Ubuntu-Regular.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = trading/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		81CB23B0C2544900B7F581B0 /* Ubuntu-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Ubuntu-Medium.ttf"; path = "../assets/fonts/english/Ubuntu-Medium.ttf"; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-trading-tradingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-trading-tradingTests.release.xcconfig"; path = "Target Support Files/Pods-trading-tradingTests/Pods-trading-tradingTests.release.xcconfig"; sourceTree = "<group>"; };
 		B794D0DE2A3EC8D400EA42B5 /* Restart.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Restart.xcodeproj; path = "../../../../WebProjects/8invest-mob/8invest-mobile/node_modules/react-native-restart/ios/Restart.xcodeproj"; sourceTree = "<group>"; };
 		B794D0E92A3ECDC600EA42B5 /* libreact-native-restart.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-restart.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C23700552BFA4AB680DC7D7C /* Assistant-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Assistant-Bold.ttf"; path = "../assets/fonts/hebrew/Assistant-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -135,6 +151,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				BCDF02FDCC3B4627967AC028 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -167,6 +184,21 @@
 				89C6BE57DB24E9ADA2F236DE /* Pods-trading-tradingTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		BCDF02FDCC3B4627967AC028 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3AAA6C31631D4D059C1F1299 /* Ubuntu-Bold.ttf */,
+				81CB23B0C2544900B7F581B0 /* Ubuntu-Medium.ttf */,
+				6A4608216F0F491598824AB2 /* Ubuntu-Regular.ttf */,
+				608ED51CA40E4F5E978F7EC3 /* Ubuntu-Light.ttf */,
+				C23700552BFA4AB680DC7D7C /* Assistant-Bold.ttf */,
+				3AC51694A92649B6AD8D6741 /* Assistant-Light.ttf */,
+				2C69791766794F68A0F1E388 /* Assistant-Medium.ttf */,
+				1BA91748EFD5485B8A62DAF0 /* Assistant-Regular.ttf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -233,7 +265,7 @@
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "trading" */;
-			compatibilityVersion = "Xcode 12.0";
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -281,6 +313,14 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				1510D4B4CBF24B91A5BB41A5 /* Ubuntu-Bold.ttf in Resources */,
+				D636880226AE4ADEACEB3C07 /* Ubuntu-Medium.ttf in Resources */,
+				BE35ED6CD67947588113769F /* Ubuntu-Regular.ttf in Resources */,
+				37BB606787B74E2F87DD0BDA /* Ubuntu-Light.ttf in Resources */,
+				D02D31FD27EE4E78A3496F86 /* Assistant-Bold.ttf in Resources */,
+				31E8577D4D5847C690C5DB65 /* Assistant-Light.ttf in Resources */,
+				7F1148DB238B49BB9E7453A2 /* Assistant-Medium.ttf in Resources */,
+				BE99A7728884401883CAA114 /* Assistant-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,6 +563,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VJKXYF5RUH;
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -606,6 +647,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VJKXYF5RUH;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",

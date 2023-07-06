@@ -1,0 +1,37 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/english/Ubuntu-Bold.ttf",
+      "sha1": "e501312778bfff6e001a2ad4610a1b454c524443"
+    },
+    {
+      "path": "assets/fonts/english/Ubuntu-Light.ttf",
+      "sha1": "d060b0ff74b379dcc3d10ac2d024602af419d9f0"
+    },
+    {
+      "path": "assets/fonts/english/Ubuntu-Medium.ttf",
+      "sha1": "8f9552f4661c80d13082dbf72a38ab4585d0b8a9"
+    },
+    {
+      "path": "assets/fonts/english/Ubuntu-Regular.ttf",
+      "sha1": "31b6449384c3fe8d10a483814fe68302dc05485f"
+    },
+    {
+      "path": "assets/fonts/hebrew/Assistant-Bold.ttf",
+      "sha1": "bc0cbf687dd64b28f4fd5b4a0b8de50bac9fab71"
+    },
+    {
+      "path": "assets/fonts/hebrew/Assistant-Light.ttf",
+      "sha1": "71e87fe9403fb86a9ec128594d59705ddd242ba0"
+    },
+    {
+      "path": "assets/fonts/hebrew/Assistant-Medium.ttf",
+      "sha1": "8b533cdcda8dd42032c2ee962d76988c554d10c3"
+    },
+    {
+      "path": "assets/fonts/hebrew/Assistant-Regular.ttf",
+      "sha1": "c9f93188102aff986e127fd71b48c6e6ef1cf538"
+    }
+  ]
+}
