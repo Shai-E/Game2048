@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {I18nManager, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {ScreenContainer, TextElement} from '../../components/Reusable/reusable';
 import {
   heightPercentageToDP as hp,
@@ -17,18 +17,21 @@ const topTabs = {
   home5: SettingsScreen,
 };
 
+const DEFAULT_TAB_WIDTH = wp('33.33%');
+const DEFAULT_BAR_WIDTH = wp('100%');
+const OFFSET = (DEFAULT_BAR_WIDTH - DEFAULT_TAB_WIDTH) / 2;
+
 const topTabsArray = Object.values(topTabs);
-
-const isRtl = I18nManager.getConstants().isRTL;
-
-const correctedTabs = isRtl ? [...topTabsArray].reverse() : topTabsArray;
 
 const keyExtractor = (itemData, index) => itemData + index;
 
 const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
   return (
     <TouchableOpacity
-      style={{width: wp('33%'), backgroundColor: active ? 'blue' : 'magenta'}}
+      style={{
+        width: DEFAULT_TAB_WIDTH,
+        backgroundColor: active ? 'blue' : 'magenta',
+      }}
       activeOpacity={0.6}
       onPress={() => {
         console.log(name);
@@ -53,32 +56,37 @@ const TopTabScreens = ({navigation, route, currentTab, setCurrentTab}) => {
   return (
     <FlatList
       getItemLayout={(data, index) => ({
-        length: wp('100%'),
-        offset: wp('100%') * index,
+        length: DEFAULT_BAR_WIDTH,
+        offset: DEFAULT_BAR_WIDTH * index,
         index,
       })}
       ref={topTabsContainerRef}
       disableIntervalMomentum={true}
-      snapToInterval={wp('100%')}
+      snapToInterval={DEFAULT_BAR_WIDTH}
       decelerationRate="fast"
       snapToAlignment="start"
-      contentContainerStyle={{
-        flexDirection: isRtl ? 'row-reverse' : 'row',
+      onMomentumScrollBegin={event => {
+        const contentOffset = event.nativeEvent.contentOffset;
+        const index = Math.floor(contentOffset.x / DEFAULT_BAR_WIDTH);
+        index >= 0 && setCurrentTab(index);
       }}
       onMomentumScrollEnd={event => {
         const contentOffset = event.nativeEvent.contentOffset;
-        const index = Math.round(contentOffset.x / wp('100%'));
-        setCurrentTab(index);
+        const index = Math.round(contentOffset.x / DEFAULT_BAR_WIDTH);
+        index >= 0 && setCurrentTab(index);
+
+        // setCurrentTab(index);
       }}
+      bounces={false}
       initialScrollIndex={0}
-      style={{height: '100%', width: wp('100%')}}
-      data={correctedTabs}
+      style={{height: '100%', width: DEFAULT_BAR_WIDTH}}
+      data={topTabsArray}
       keyExtractor={keyExtractor}
       horizontal
       showsHorizontalScrollIndicator={false}
       renderItem={({item: Screen, index}) => {
         return (
-          <View style={{height: '100%', width: wp('100%')}}>
+          <View style={{height: '100%', width: DEFAULT_BAR_WIDTH}}>
             <Screen navigation={navigation} route={route} />
           </View>
         );
@@ -88,34 +96,42 @@ const TopTabScreens = ({navigation, route, currentTab, setCurrentTab}) => {
 };
 
 const TopTabBar = ({currentTab, setCurrentTab}) => {
+  const tabsRef = useRef();
+  useEffect(() => {
+    tabsRef.current?.scrollToIndex({
+      index: currentTab,
+      animated: true,
+      viewOffset: OFFSET,
+    });
+  }, [currentTab]);
   return (
-    <View
+    <FlatList
+      ref={tabsRef}
+      getItemLayout={(data, index) => ({
+        length: DEFAULT_TAB_WIDTH,
+        offset: DEFAULT_TAB_WIDTH * index,
+        index,
+      })}
       style={{
-        backgroundColor: 'red',
         height: hp('5.2%'),
-        width: wp('100%'),
-      }}>
-      <FlatList
-        getItemLayout={(data, index) => ({
-          length: wp('33%'),
-          offset: wp('33%') * index,
-          index,
-        })}
-        data={Object.keys(topTabs)}
-        keyExtractor={keyExtractor}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        initialScrollIndex={!isRtl ? Object.keys(topTabs).length - 1 : 0}
-        renderItem={({item, index}) => (
-          <TopTab
-            name={item}
-            setCurrentTab={setCurrentTab}
-            active={currentTab === index}
-            tabIndex={index}
-          />
-        )}
-      />
-    </View>
+        width: DEFAULT_BAR_WIDTH,
+      }}
+      snapToInterval={DEFAULT_TAB_WIDTH}
+      data={Object.keys(topTabs)}
+      keyExtractor={keyExtractor}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      initialScrollIndex={0}
+      bounces={false}
+      renderItem={({item, index}) => (
+        <TopTab
+          name={item}
+          setCurrentTab={setCurrentTab}
+          active={currentTab === index}
+          tabIndex={index}
+        />
+      )}
+    />
   );
 };
 
@@ -123,7 +139,8 @@ const TopTabNavigator = ({navigation, route}) => {
   const [currentTab, setCurrentTab] = useState(0);
 
   return (
-    <ScreenContainer customStyle={{justifyContent: 'flex-start'}}>
+    <ScreenContainer
+      customStyle={{justifyContent: 'flex-start', width: DEFAULT_BAR_WIDTH}}>
       <TopTabBar currentTab={currentTab} setCurrentTab={setCurrentTab} />
       <TopTabScreens
         navigation={navigation}
