@@ -74,6 +74,9 @@ const TopTabScreens = ({
       horizontal
       showsHorizontalScrollIndicator={false}
       snapToInterval={wp('100%')}
+      snapToAlignment={'start'}
+      decelerationRate={'fast'}
+      // scrollToOverflowEnabled={}
       style={{
         height: '100%',
         width: DEFAULT_BAR_WIDTH,
@@ -88,13 +91,6 @@ const TopTabScreens = ({
           <View
             key={tabName}
             style={{height: '100%', width: DEFAULT_BAR_WIDTH}}>
-            {/* <View
-              style={{
-                flex: 1,
-                backgroundColor: index % 2 === 0 ? 'red' : 'green',
-              }}>
-              <TextElement>{index}</TextElement>
-            </View> */}
             <Screen navigation={navigation} route={route} />
           </View>
         );
@@ -113,6 +109,13 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
     });
   }, [currentTab]);
 
+  console.log(
+    DEFAULT_BAR_WIDTH / topTabKeysArray.length,
+    Platform.OS,
+    DEFAULT_TAB_WIDTH,
+    '__________',
+  );
+
   return (
     <ScrollView
       ref={tabsRef}
@@ -124,11 +127,22 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
         backgroundColor: EStyleSheet.value('$fillSecondary'),
         flexDirection:
           Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
+        // direction: 'ltr',
       }}
       contentContainerStyle={{
         justifyContent: 'center',
+        // alignSelf: 'center',
+        // justifySelf: '',
+        // width: '100%',
         backgroundColor: EStyleSheet.value('$warning'), // background color on press.
-        minWidth: '100%',
+        minWidth:
+          DEFAULT_BAR_WIDTH / topTabKeysArray.length > DEFAULT_TAB_WIDTH
+            ? undefined
+            : '100%',
+        marginEnd:
+          DEFAULT_BAR_WIDTH / topTabKeysArray.length > DEFAULT_TAB_WIDTH
+            ? DEFAULT_BAR_WIDTH - topTabKeysArray.length * DEFAULT_TAB_WIDTH
+            : 0,
       }}>
       {topTabKeysArray.map((item, index) => {
         const correctedIndex =
