@@ -1,16 +1,15 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../containers/HomeScreen/HomeScreen';
 import SettingsScreen from '../containers/SettingScreen/SettingsScreen';
-import OptionsScreen from '../containers/OptionsScreen/OptionsScreen';
 import {createNavigationScreen} from '../services/utils/navigationHelpers/createNavigationScreen';
+import {MyCustomTopTabBar} from './TopTabNavigation';
 
 const Tab = createBottomTabNavigator();
 
 const bottomTabs = {
-  //   TopNavigation: TopTabs,
   Home: HomeScreen,
   Settings: SettingsScreen,
-  Options: OptionsScreen,
+  Options: MyCustomTopTabBar,
 };
 
 export const BottomTabs = () => {

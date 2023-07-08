@@ -7,7 +7,7 @@ import {setIsLoading, setOpenModal} from '../../store/reducers/appSlice';
 import {ScreenContainer} from '../../components/Reusable/reusable';
 import {ButtonElement, TextElement} from '../../components/Reusable/reusable';
 
-const HomeScreen = ({setIsloading}) => {
+const HomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {i18n, t} = useTranslation();
@@ -27,11 +27,11 @@ const HomeScreen = ({setIsloading}) => {
     }, 3000);
   };
   const navigateToOptions = () =>
-    navigation.navigate('user', {screen: 'Options'});
+    navigation.navigate('user', {screen: 'Settings'});
   const navigateToOptions2 = () =>
     navigation.navigate('user', {
-      screen: 'TopNavigation',
-      // params: {tab: route.params?.tab},
+      screen: 'Options',
+      params: {tab: 'settings2'},
     });
   const openModal = () => {
     dispatch(setOpenModal(true));
@@ -42,14 +42,8 @@ const HomeScreen = ({setIsloading}) => {
       <ButtonElement title="change language" onPress={changeLanguage} />
       <ButtonElement title="set loading for 3 seconds" onPress={setLoading} />
       <ButtonElement title="open Modal" onPress={openModal} />
-      <ButtonElement
-        title="navigate to options 1"
-        onPress={navigateToOptions}
-      />
-      <ButtonElement
-        title="navigate to options 2"
-        onPress={navigateToOptions2}
-      />
+      <ButtonElement title="navigate to Settings" onPress={navigateToOptions} />
+      <ButtonElement title="Checkout Home3 tab" onPress={navigateToOptions2} />
     </ScreenContainer>
   );
 };
