@@ -6,7 +6,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {
   SearchIcon as PortfolioIcon,
-  SearchIcon as MarketsIcon,
+  HomeIcon,
   SearchIcon as FundsIcon,
   MenuIcon as MenuIcon,
   SearchIcon,
@@ -28,7 +28,7 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   const {t} = useTranslation();
 
   const navigationTabs = [
-    <MarketsIcon style={{color: screen === route ? brandCyan : black}} />,
+    <HomeIcon style={{color: screen === route ? brandCyan : black}} />,
     <PortfolioIcon style={{color: screen === route ? brandCyan : black}} />,
     <SearchIcon style={{color: screen === route ? brandCyan : black}} />,
     <FundsIcon style={{color: screen === route ? brandCyan : black}} />,
@@ -41,7 +41,6 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
       return () => {
         console.log('drawer');
       };
-    console.log(section, route);
     navigation.navigate(section, {screen: route});
   }, [screen]);
 
