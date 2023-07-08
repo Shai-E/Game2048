@@ -1,0 +1,39 @@
+{
+  "tabs": [
+    {
+      "tab": "HOME",
+      "section": "user",
+      "route": "Home",
+      "icon": 0,
+      "accessibilityLabel": "appHome"
+    },
+    {
+      "tab": "SETTINGS",
+      "section": "user",
+      "route": "Settings",
+      "icon": 1,
+      "accessibilityLabel": "appSettings"
+    },
+    {
+      "tab": "OPTIONS",
+      "section": "user",
+      "route": "Options",
+      "icon": 3,
+      "accessibilityLabel": "appOptions"
+    },
+    {
+      "tab": "SEARCH",
+      "section": "user",
+      "route": "Search",
+      "icon": 2,
+      "accessibilityLabel": "appSearch"
+    },
+    {
+      "tab": "MENU",
+      "section": "user",
+      "route": "Menu",
+      "icon": 4,
+      "accessibilityLabel": "appMenu"
+    }
+  ]
+}
