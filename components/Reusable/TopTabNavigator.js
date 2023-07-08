@@ -16,7 +16,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 const DEFAULT_TAB_WIDTH = wp('33.33%');
 const DEFAULT_BAR_HEIGHT = hp('6%');
 const DEFAULT_BAR_WIDTH = wp('100%');
-const OFFSET = (DEFAULT_BAR_WIDTH - DEFAULT_TAB_WIDTH) / 2;
+// const OFFSET = (DEFAULT_BAR_WIDTH - DEFAULT_TAB_WIDTH) / 2;
 const isRtl = I18nManager.getConstants().isRTL;
 
 const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
@@ -60,10 +60,6 @@ const TopTabScreens = ({
   const handleSnap = event => {
     const contentOffset = event.nativeEvent.contentOffset;
     const index = Math.round(contentOffset.x / DEFAULT_BAR_WIDTH);
-    // const corrected =
-    //   Platform.OS === 'android' && isRtl
-    //     ? topTabKeysArray.length - 1 - index
-    //     : index;
     if (index === currentTab) return;
     index >= 0 && setCurrentTab(index);
   };
@@ -76,7 +72,6 @@ const TopTabScreens = ({
       snapToInterval={wp('100%')}
       snapToAlignment={'start'}
       decelerationRate={'fast'}
-      // scrollToOverflowEnabled={}
       style={{
         height: '100%',
         width: DEFAULT_BAR_WIDTH,
@@ -109,13 +104,6 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
     });
   }, [currentTab]);
 
-  console.log(
-    DEFAULT_BAR_WIDTH / topTabKeysArray.length,
-    Platform.OS,
-    DEFAULT_TAB_WIDTH,
-    '__________',
-  );
-
   return (
     <ScrollView
       ref={tabsRef}
@@ -127,13 +115,9 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
         backgroundColor: EStyleSheet.value('$fillSecondary'),
         flexDirection:
           Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
-        // direction: 'ltr',
       }}
       contentContainerStyle={{
         justifyContent: 'center',
-        // alignSelf: 'center',
-        // justifySelf: '',
-        // width: '100%',
         backgroundColor: EStyleSheet.value('$warning'), // background color on press.
         minWidth:
           DEFAULT_BAR_WIDTH / topTabKeysArray.length > DEFAULT_TAB_WIDTH
