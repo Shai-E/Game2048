@@ -1,6 +1,7 @@
 import Config from 'react-native-config';
+import store from '../store/store';
 
-const isDarkMode = true;
+const isDarkMode = store.getState().appSlice.isDarkMode;
 const BRAND = Config.BRAND;
 
 const colorPalette = {
