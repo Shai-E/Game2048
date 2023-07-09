@@ -64,7 +64,7 @@ const TopTabScreens = ({
     if (index === currentTab) return;
     index >= 0 && setCurrentTab(index);
   };
-  const [canmomentum, setCanMomentum] = useState(false);
+  const canmomentum = useRef(false);
 
   return useMemo(
     () => (
@@ -82,13 +82,13 @@ const TopTabScreens = ({
           flexDirection:
             Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
         }}
-        onScroll={() => {
-          setCanMomentum(true);
+        onMomentumScrollBegin={() => {
+          canmomentum.current = true;
         }}
         onScrollEndDrag={handleSnap}
         onMomentumScrollEnd={event => {
-          if (canmomentum) handleSnap(event);
-          setCanMomentum(false);
+          if (canmomentum.current) handleSnap(event);
+          canmomentum.current = false;
         }}>
         {topTabKeysArray.map((tabName, index) => {
           const Screen = topTabs[tabName];
