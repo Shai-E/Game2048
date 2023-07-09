@@ -180,6 +180,8 @@ dependencies {
     }
     
     implementation project(':react-native-restart')
+    implementation project(':react-native-orientation')
+
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

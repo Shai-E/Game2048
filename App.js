@@ -15,6 +15,7 @@ initApp();
 
 import {BottomTabs} from './navigation/BottomTabNavigation';
 import {createNavigationScreen} from './services/utils/navigationHelpers/createNavigationScreen';
+import Orientation from 'react-native-orientation';
 
 const MainNavigator = createNativeStackNavigator();
 
@@ -26,8 +27,11 @@ const stacks = {
 const createUserStack = stacks =>
   createNavigationScreen(stacks, MainNavigator.Screen);
 
+Orientation.lockToPortrait();
+
 const AppNavigator = () => {
   const UserStack = createUserStack(stacks);
+  useEffect(() => {}, []);
   return (
     <MainNavigator.Navigator
       screenOptions={{
