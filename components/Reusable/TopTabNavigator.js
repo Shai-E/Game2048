@@ -49,13 +49,15 @@ const TopTabScreens = ({
 }) => {
   const topTabsContainerRef = useRef(null);
 
-  useEffect(() => {
+  const handleScreenTopTabFocus = () => {
     (currentTab === 0 || currentTab) &&
       topTabsContainerRef.current?.scrollTo({
         x: currentTab * DEFAULT_BAR_WIDTH,
         animated: true,
       });
-  }, [currentTab]);
+  };
+
+  useEffect(handleScreenTopTabFocus, [currentTab]);
 
   const handleSnap = event => {
     const contentOffset = event.nativeEvent.contentOffset;
@@ -72,6 +74,7 @@ const TopTabScreens = ({
       snapToInterval={wp('100%')}
       snapToAlignment={'start'}
       decelerationRate={'fast'}
+      onLayout={handleScreenTopTabFocus}
       style={{
         height: '100%',
         width: DEFAULT_BAR_WIDTH,
@@ -97,18 +100,21 @@ const TopTabScreens = ({
 const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
   const tabsRef = useRef();
 
-  useEffect(() => {
+  const handleTopTabFocus = () => {
     tabsRef.current?.scrollTo({
       x: (currentTab - 1) * DEFAULT_TAB_WIDTH,
       animated: true,
     });
-  }, [currentTab]);
+  };
+
+  useEffect(handleTopTabFocus, [currentTab]);
 
   return (
     <ScrollView
       ref={tabsRef}
       horizontal
       showsHorizontalScrollIndicator={false}
+      onLayout={handleTopTabFocus}
       style={{
         height: DEFAULT_BAR_HEIGHT,
         minWidth: DEFAULT_BAR_WIDTH,

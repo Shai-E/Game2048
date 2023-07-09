@@ -31,7 +31,7 @@ const HomeScreen = () => {
   const navigateToOptions2 = () =>
     navigation.navigate('user', {
       screen: 'Options',
-      params: {tab: 'settings2'},
+      params: {tab: 'tab3'},
     });
   const openModal = () => {
     dispatch(setOpenModal(true));
@@ -39,11 +39,14 @@ const HomeScreen = () => {
   return (
     <ScreenContainer>
       <TextElement>{t('home.screen')}</TextElement>
-      <ButtonElement title="change language" onPress={changeLanguage} />
-      <ButtonElement title="set loading for 3 seconds" onPress={setLoading} />
-      <ButtonElement title="open Modal" onPress={openModal} />
-      <ButtonElement title="navigate to Settings" onPress={navigateToOptions} />
-      <ButtonElement title="Checkout Home3 tab" onPress={navigateToOptions2} />
+      <ButtonElement title={t('change.language')} onPress={changeLanguage} />
+      <ButtonElement title={t('set.loading')} onPress={setLoading} />
+      <ButtonElement title={t('open.modal')} onPress={openModal} />
+      <ButtonElement
+        title={t('navigate.to.settings')}
+        onPress={navigateToOptions}
+      />
+      <ButtonElement title={t('checkout.tab')} onPress={navigateToOptions2} />
     </ScreenContainer>
   );
 };

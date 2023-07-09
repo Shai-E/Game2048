@@ -1,5 +1,10 @@
 {
   "he": {
-    "home.screen": "דף הבית"
+    "home.screen": "דף הבית",
+    "change.language": "שנה שפה",
+    "set.loading": "הפעל ספינר ל-3 שניות",
+    "open.modal": "פתח מודל",
+    "navigate.to.settings": "נווט להגדרות",
+    "checkout.tab": "נווט לטאב 3 בעמוד האפשרויות"
   }
 }

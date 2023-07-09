@@ -1,5 +1,10 @@
 {
   "en": {
-    "home.screen": "home screen"
+    "home.screen": "Home Screen",
+    "change.language": "Change Language",
+    "set.loading": "Set Loader for 3 Seconds",
+    "open.modal": "Open Modal",
+    "navigate.to.settings": "Navigate to Settings",
+    "checkout.tab": "Checkout Tab 3 in Options"
   }
 }
