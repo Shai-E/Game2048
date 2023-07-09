@@ -14,10 +14,11 @@ import {
 } from 'react-native-responsive-screen';
 
 // Fixtures
-import {tabs} from '../../fixtures/navigationTabs.json';
-import i18n from 'i18next';
+import {useTabs} from '../../fixtures/navigationTabs';
+import {useTranslation} from 'react-i18next';
 
 const AppTabBar = () => {
+  const {i18n} = useTranslation();
   const language = i18n.language;
   const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
   const [rerender, setRerender] = useState(false);
@@ -32,6 +33,8 @@ const AppTabBar = () => {
       setRerender(!rerender);
     }, [language]),
   );
+
+  const tabs = useTabs();
 
   return (
     <Fragment>

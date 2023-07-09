@@ -16,7 +16,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 const DEFAULT_TAB_WIDTH = wp('33.33%');
 const DEFAULT_BAR_HEIGHT = hp('6%');
 const DEFAULT_BAR_WIDTH = wp('100%');
-// const OFFSET = (DEFAULT_BAR_WIDTH - DEFAULT_TAB_WIDTH) / 2;
 const isRtl = I18nManager.getConstants().isRTL;
 
 const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
@@ -99,10 +98,12 @@ const TopTabScreens = ({
 
 const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
   const tabsRef = useRef();
+  const OFFSET =
+    Math.floor(DEFAULT_BAR_WIDTH - DEFAULT_TAB_WIDTH) / 2 / DEFAULT_TAB_WIDTH;
 
   const handleTopTabFocus = () => {
     tabsRef.current?.scrollTo({
-      x: (currentTab - 1) * DEFAULT_TAB_WIDTH,
+      x: (currentTab - OFFSET) * DEFAULT_TAB_WIDTH,
       animated: true,
     });
   };
@@ -156,14 +157,17 @@ const TopTabNavigator = ({navigation, route, topTabs}) => {
   const topTabKeysArray = Object.keys(topTabs);
   const correctedDefaultIndex =
     Platform.OS === 'android' && isRtl ? topTabKeysArray.length - 1 : 0;
-  const routeNameToIndex = topTabKeysArray.findIndex(
-    tabName => tabName === route.params?.tab,
-  );
-
+  const routeNameToIndex = topTabKeysArray.findIndex(tabName => {
+    return tabName === route.params?.tab;
+  });
   const routeIndexFound = routeNameToIndex !== -1;
   const initialRouteIndex =
     (routeIndexFound && routeNameToIndex) || correctedDefaultIndex;
-  const [currentTab, setCurrentTab] = useState(initialRouteIndex);
+  const [currentTab, setCurrentTab] = useState(
+    Platform.OS === 'android' && isRtl && route.params?.tab
+      ? topTabKeysArray.length - 1 - initialRouteIndex
+      : initialRouteIndex,
+  );
   return (
     <ScreenContainer
       customStyle={{justifyContent: 'flex-start', width: DEFAULT_BAR_WIDTH}}>

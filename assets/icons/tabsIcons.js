@@ -16,7 +16,7 @@ export const MenuIcon = props => (
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}
-        strokeWidth={1.2}
+        strokeWidth={2}
         data-name="Group 16241">
         <Path d="M1.377 3.029h18.058" data-name="Line 1456" />
         <Path d="M1.377 9.768h18.058" data-name="Line 1457" />
@@ -34,7 +34,7 @@ export const SearchIcon = props => (
     viewBox="0 0 16.449 16.449"
     {...props}>
     <G
-      fill="none"
+      fill={EStyleSheet.value('$fillSecondary')}
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"

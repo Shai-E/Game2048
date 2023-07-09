@@ -5,6 +5,17 @@
     "set.loading": "הפעל ספינר ל-3 שניות",
     "open.modal": "פתח מודל",
     "navigate.to.settings": "נווט להגדרות",
-    "checkout.tab": "נווט לטאב 3 בעמוד האפשרויות"
+    "checkout.tab": "נווט לטאב 3 בעמוד האפשרויות",
+    "screens": {
+      "settings": "הגדרות",
+      "home": "דף הבית"
+    },
+    "tabs": {
+      "home": "בית",
+      "settings": "הגדרות",
+      "options": "אפשרויות",
+      "search": "חיפוש",
+      "menu": "תפריט"
+    }
   }
 }

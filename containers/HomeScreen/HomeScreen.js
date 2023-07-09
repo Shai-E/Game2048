@@ -38,7 +38,7 @@ const HomeScreen = () => {
   };
   return (
     <ScreenContainer>
-      <TextElement>{t('home.screen')}</TextElement>
+      <TextElement>{t('screens.home')}</TextElement>
       <ButtonElement title={t('change.language')} onPress={changeLanguage} />
       <ButtonElement title={t('set.loading')} onPress={setLoading} />
       <ButtonElement title={t('open.modal')} onPress={openModal} />

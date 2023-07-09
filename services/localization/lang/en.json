@@ -1,10 +1,20 @@
 {
   "en": {
-    "home.screen": "Home Screen",
     "change.language": "Change Language",
     "set.loading": "Set Loader for 3 Seconds",
     "open.modal": "Open Modal",
     "navigate.to.settings": "Navigate to Settings",
-    "checkout.tab": "Checkout Tab 3 in Options"
+    "checkout.tab": "Checkout Tab 3 in Options",
+    "screens": {
+      "settings": "Settings Screen",
+      "home": "Home Screen"
+    },
+    "tabs": {
+      "home": "Home",
+      "settings": "Settings",
+      "options": "Options",
+      "search": "Search",
+      "menu": "Menu"
+    }
   }
 }
