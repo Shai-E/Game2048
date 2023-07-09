@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   I18nManager,
   Platform,
@@ -65,34 +65,37 @@ const TopTabScreens = ({
     index >= 0 && setCurrentTab(index);
   };
 
-  return (
-    <ScrollView
-      ref={topTabsContainerRef}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      snapToInterval={wp('100%')}
-      snapToAlignment={'start'}
-      decelerationRate={'fast'}
-      onLayout={handleScreenTopTabFocus}
-      style={{
-        height: '100%',
-        width: DEFAULT_BAR_WIDTH,
-        flexDirection:
-          Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
-      }}
-      onScrollEndDrag={handleSnap}
-      onMomentumScrollEnd={handleSnap}>
-      {topTabKeysArray.map((tabName, index) => {
-        const Screen = topTabs[tabName];
-        return (
-          <View
-            key={tabName}
-            style={{height: '100%', width: DEFAULT_BAR_WIDTH}}>
-            <Screen navigation={navigation} route={route} />
-          </View>
-        );
-      })}
-    </ScrollView>
+  return useMemo(
+    () => (
+      <ScrollView
+        ref={topTabsContainerRef}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={wp('100%')}
+        snapToAlignment={'start'}
+        decelerationRate={'fast'}
+        onLayout={handleScreenTopTabFocus}
+        style={{
+          height: '100%',
+          width: DEFAULT_BAR_WIDTH,
+          flexDirection:
+            Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
+        }}
+        onScrollEndDrag={handleSnap}
+        onMomentumScrollEnd={handleSnap}>
+        {topTabKeysArray.map((tabName, index) => {
+          const Screen = topTabs[tabName];
+          return (
+            <View
+              key={tabName}
+              style={{height: '100%', width: DEFAULT_BAR_WIDTH}}>
+              <Screen navigation={navigation} route={route} />
+            </View>
+          );
+        })}
+      </ScrollView>
+    ),
+    [],
   );
 };
 
