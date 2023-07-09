@@ -5,9 +5,9 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 // Style
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {
-  SearchIcon as PortfolioIcon,
+  OptionsIcon,
   HomeIcon,
-  SearchIcon as FundsIcon,
+  SettingsIcon,
   MenuIcon as MenuIcon,
   SearchIcon,
 } from '../../assets/icons/tabsIcons';
@@ -21,18 +21,18 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   const navigation = useNavigation();
   const currRoute = useRoute();
   const screen = currRoute.params?.screen || 'rates';
-  const [black, brandCyan] = [
-    EStyleSheet.value('$success'),
+  const [primaryText, warning] = [
+    EStyleSheet.value('$primaryText'),
     EStyleSheet.value('$warning'),
   ];
   const {t} = useTranslation();
 
   const navigationTabs = [
-    <HomeIcon style={{color: screen === route ? brandCyan : black}} />,
-    <PortfolioIcon style={{color: screen === route ? brandCyan : black}} />,
-    <SearchIcon style={{color: screen === route ? brandCyan : black}} />,
-    <FundsIcon style={{color: screen === route ? brandCyan : black}} />,
-    <MenuIcon style={{color: screen === route ? brandCyan : black}} />,
+    <HomeIcon style={{color: screen === route ? warning : primaryText}} />,
+    <OptionsIcon style={{color: screen === route ? warning : primaryText}} />,
+    <SearchIcon style={{color: screen === route ? warning : primaryText}} />,
+    <SettingsIcon style={{color: screen === route ? warning : primaryText}} />,
+    <MenuIcon style={{color: screen === route ? warning : primaryText}} />,
   ];
 
   const routeNavigation = useCallback(() => {
@@ -53,10 +53,12 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
       accessibilityLabel={accessibilityLabel}>
       <View style={styles.iconTabContainer}>{navigationTabs[icon]}</View>
       <TextElement
-        style={screen === route ? {color: brandCyan} : {color: black}}>
+        style={screen === route ? {color: warning} : {color: primaryText}}>
         <TextElement
-          customStyle={screen === route ? {color: brandCyan} : {color: black}}
-          changeFontByRem={screen === route ? -0.35 : -0.3}>
+          customStyle={
+            screen === route ? {color: warning} : {color: primaryText}
+          }
+          changeFontByRem={-0.3}>
           {t(tab)}
         </TextElement>
       </TextElement>
