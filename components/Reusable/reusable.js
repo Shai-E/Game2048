@@ -13,6 +13,7 @@ import {
   I18nManager,
   Pressable,
   Linking,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -187,38 +188,39 @@ export const LinkElement = ({
   //     'If you find this interesting, email us at https://www.saachitech.com or contact us at http://stackoverflow.com and we will help you out!',
   //   ),
   // );
-  const link = !noHitSlop ? (
-    children.split(' ').map((word, index, sentence) => (
-      <TouchableOpacity
-        key={word + 'link'}
-        hitSlop={{top: 40, left: 40, bottom: 40, right: 40}}
+  const link =
+    !noHitSlop && Platform.OS === 'android' ? (
+      children.split(' ').map((word, index, sentence) => (
+        <TouchableOpacity
+          key={word + 'link'}
+          hitSlop={{top: 40, left: 40, bottom: 40, right: 40}}
+          accessibilityLabel={accessibilityLabel || 'default'}
+          accessible={true}
+          activeOpacity={1}
+          onPress={onPress}
+          style={{
+            overflow: 'hidden',
+            transform: [{translateY: ((1 + (changeFontByRem || 0)) * 16) / 5}],
+            justifyContent: 'center',
+          }}>
+          <TextElement
+            customStyle={{...styles.link, ...customStyle}}
+            changeFontByRem={changeFontByRem || 0}>
+            {word}
+            {sentence.length - 1 !== index && ' '}
+          </TextElement>
+        </TouchableOpacity>
+      ))
+    ) : (
+      <TextElement
         accessibilityLabel={accessibilityLabel || 'default'}
         accessible={true}
-        activeOpacity={1}
         onPress={onPress}
-        style={{
-          overflow: 'hidden',
-          transform: [{translateY: ((1 + (changeFontByRem || 0)) * 16) / 5}],
-          justifyContent: 'center',
-        }}>
-        <TextElement
-          customStyle={{...styles.link, ...customStyle}}
-          changeFontByRem={changeFontByRem || 0}>
-          {word}
-          {sentence.length - 1 !== index && ' '}
-        </TextElement>
-      </TouchableOpacity>
-    ))
-  ) : (
-    <TextElement
-      accessibilityLabel={accessibilityLabel || 'default'}
-      accessible={true}
-      onPress={onPress}
-      customStyle={{...styles.link, ...customStyle}}
-      changeFontByRem={changeFontByRem || 0}>
-      {content}
-    </TextElement>
-  );
+        customStyle={{...styles.link, ...customStyle}}
+        changeFontByRem={changeFontByRem || 0}>
+        {content}
+      </TextElement>
+    );
   return <>{link}</>;
 };
 

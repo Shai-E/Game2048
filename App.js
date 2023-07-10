@@ -26,6 +26,7 @@ Orientation.lockToPortrait();
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {I18nManager} from 'react-native';
+import {MenuDrawerScreen} from './containers/MenuDrawerScreen/MenuDrawerScreen';
 
 const MainNavigator = createNativeStackNavigator();
 const UserNavigator = createNativeStackNavigator();
@@ -53,11 +54,7 @@ const RightDrawer = () => {
   return (
     <DrawerNavigator.Navigator
       id="RightDrawer"
-      drawerContent={props => (
-        <ScreenContainer>
-          <TextElement>drawer</TextElement>
-        </ScreenContainer>
-      )}
+      drawerContent={props => <MenuDrawerScreen {...props} />}
       screenOptions={customScreenOptions}>
       <DrawerNavigator.Screen name={'tab-bar'} component={BottomTabs} />
     </DrawerNavigator.Navigator>
