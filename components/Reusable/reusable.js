@@ -11,6 +11,8 @@ import {
   TouchableWithoutFeedback,
   StatusBar,
   I18nManager,
+  Pressable,
+  Linking,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -139,7 +141,7 @@ export const LinkElement = ({
   onPress,
   children,
   EndIcon,
-  addOpacity,
+  noHitSlop,
   changeFontByRem,
   accessibilityLabel,
 }) => {
@@ -161,18 +163,52 @@ export const LinkElement = ({
       {EndIcon && <EndIcon style={styles.endIcon} />}
     </>
   );
-  const link = addOpacity ? (
-    <TouchableOpacity
-      accessibilityLabel={accessibilityLabel || 'default'}
-      accessible={true}
-      activeOpacity={0.6}
-      onPress={onPress}>
-      <TextElement
-        customStyle={{...styles.link, ...customStyle}}
-        changeFontByRem={changeFontByRem || 0}>
-        {content}
-      </TextElement>
-    </TouchableOpacity>
+
+  const touchedRef = useRef(false);
+
+  // function createTextLinks(text) {
+  //   let texts = text.split(' ');
+  //   let comps = texts.map(link => {
+  //     let linking = link.match(/([^\S]|^)(((https?\:\/\/)|(www\.))(\S+))/gi);
+  //     if (linking)
+  //       return (
+  //         <TouchableOpacity onPress={() => Linking.openURL(linking)}>
+  //           {linking}
+  //         </TouchableOpacity>
+  //       );
+  //     return link;
+  //   });
+  //   //insert space again
+  //   comps = comps.map(comp => [comp, ' ']);
+  //   return comps.flat();
+  // }
+  // console.log(
+  //   createTextLinks(
+  //     'If you find this interesting, email us at https://www.saachitech.com or contact us at http://stackoverflow.com and we will help you out!',
+  //   ),
+  // );
+  const link = !noHitSlop ? (
+    children.split(' ').map((word, index, sentence) => (
+      <TouchableOpacity
+        key={word + 'link'}
+        hitSlop={{top: 40, left: 40, bottom: 40, right: 40}}
+        accessibilityLabel={accessibilityLabel || 'default'}
+        accessible={true}
+        activeOpacity={1}
+        onPress={onPress}
+        style={{
+          overflow: 'hidden',
+          transform: [{translateY: ((1 + (changeFontByRem || 0)) * 16) / 5}],
+          justifyContent: 'center',
+        }}>
+        <TextElement
+          customStyle={{...styles.link, ...customStyle}}
+          changeFontByRem={changeFontByRem || 0}>
+          {word}
+          {sentence.length - 1 !== index && ' '}
+        </TextElement>
+      </TouchableOpacity>
+    ))
   ) : (
     <TextElement
       accessibilityLabel={accessibilityLabel || 'default'}
@@ -311,6 +347,7 @@ export const ScreenContainer = ({children, customStyle}) => {
       backgroundColor: '$background',
       alignItems: 'center',
       justifyContent: 'center',
+      paddingHorizontal: wp('2.5%'),
       ...customStyle,
     },
   });

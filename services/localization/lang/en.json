@@ -15,6 +15,9 @@
       "options": "Options",
       "search": "Search",
       "menu": "Menu"
-    }
+    },
+    "visit.link": "Visit link",
+    "in.browser": "on your phone's web browser",
+    "inside.app": "inside this app"
   }
 }
