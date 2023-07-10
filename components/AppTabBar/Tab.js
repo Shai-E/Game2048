@@ -36,11 +36,9 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   ];
 
   const routeNavigation = useCallback(() => {
-    // if (route === 'user-menu') return navigation.openDrawer();
-    if (route === 'user-menu')
-      return () => {
-        console.log('drawer');
-      };
+    if (route === 'Menu') {
+      return navigation.openDrawer();
+    }
     navigation.navigate(section, {screen: route});
   }, [screen]);
 

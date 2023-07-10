@@ -1,16 +1,14 @@
-export const createNavigationScreen = (
-  navigationItems,
-  OutputComponent,
-  topTabBarShown,
-) => {
+export const createNavigationScreen = (navigationItems, OutputComponent) => {
   return Object.entries(navigationItems).map(([name, Component]) => {
-    const Stack = props => {
-      return (
-        <Component {...props} topTabBarShown={topTabBarShown} tab={name} />
-      );
+    const ComponentWithProps = props => {
+      return <Component {...props} tab={name} />;
     };
     return (
-      <OutputComponent key={name + 'Screen'} name={name} component={Stack} />
+      <OutputComponent
+        key={name + 'Screen'}
+        name={name}
+        component={ComponentWithProps}
+      />
     );
   });
 };

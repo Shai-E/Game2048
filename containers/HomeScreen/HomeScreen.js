@@ -4,8 +4,9 @@ import {saveToStorage} from '../../services/utils/storage/setAsyncStorage';
 import {determineRtl} from '../../services/localization/appDirection/setAppDirection';
 import {useDispatch} from 'react-redux';
 import {setIsLoading, setOpenModal} from '../../store/reducers/appSlice';
-import {ScreenContainer} from '../../components/Reusable/reusable';
+import {LinkElement, ScreenContainer} from '../../components/Reusable/reusable';
 import {ButtonElement, TextElement} from '../../components/Reusable/reusable';
+import {Linking} from 'react-native';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -27,9 +28,9 @@ const HomeScreen = () => {
     }, 3000);
   };
   const navigateToOptions = () =>
-    navigation.navigate('user', {screen: 'Settings'});
+    navigation.navigate('tab-bar', {screen: 'Settings'});
   const navigateToOptions2 = () =>
-    navigation.navigate('user', {
+    navigation.navigate('tab-bar', {
       screen: 'Options',
       params: {tab: 'tab3'},
     });
@@ -47,6 +48,25 @@ const HomeScreen = () => {
         onPress={navigateToOptions}
       />
       <ButtonElement title={t('checkout.tab')} onPress={navigateToOptions2} />
+      <TextElement>
+        {t('visit.link')}:{' '}
+        <LinkElement
+          onPress={() => {
+            Linking.openURL('https://www.google.co.il');
+          }}>
+          {t('in.browser')}
+        </LinkElement>{' '}
+        /{' '}
+        <LinkElement
+          onPress={() => {
+            navigation.navigate('user', {
+              screen: 'webview',
+              params: {uri: 'https://www.google.co.il'},
+            });
+          }}>
+          {t('inside.app')}
+        </LinkElement>
+      </TextElement>
     </ScreenContainer>
   );
 };

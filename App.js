@@ -3,7 +3,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {I18nextProvider} from 'react-i18next';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {AppContainer} from './components/Reusable/reusable';
+import {
+  AppContainer,
+  ScreenContainer,
+  TextElement,
+} from './components/Reusable/reusable';
 import i18n from './services/localization/i18n.config';
 import {determineRtl} from './services/localization/appDirection/setAppDirection';
 import store from './store/store';
@@ -14,36 +18,67 @@ import {initApp} from './services/initApp/initApp';
 initApp();
 
 import {BottomTabs} from './navigation/BottomTabNavigation';
-import {createNavigationScreen} from './services/utils/navigationHelpers/createNavigationScreen';
 import Orientation from 'react-native-orientation';
-
-const MainNavigator = createNativeStackNavigator();
-
-const stacks = {
-  user: BottomTabs,
-  // auth: BottomTabs
-};
-
-const createUserStack = stacks =>
-  createNavigationScreen(stacks, MainNavigator.Screen);
+import WebViewPage from './containers/WebViewScreen/WebViewScreen';
+import {navigationRef} from './services/utils/navigationHelpers/rootNavigation';
 
 Orientation.lockToPortrait();
 
-const AppNavigator = () => {
-  const UserStack = createUserStack(stacks);
-  useEffect(() => {}, []);
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {I18nManager} from 'react-native';
+
+const MainNavigator = createNativeStackNavigator();
+const UserNavigator = createNativeStackNavigator();
+
+// stack navigation
+const UserStack = () => {
   return (
-    <MainNavigator.Navigator
-      screenOptions={{
-        headerShown: false,
-        animationEnabled: true, // Enable animations
-        animationTypeForReplace: 'push',
-      }}>
-      <MainNavigator.Group screenOptions={{headerShown: false}}>
-        {UserStack}
-      </MainNavigator.Group>
-      {/* <MainNavigator.Screen name={'drawer'} component={RightDrawer} /> */}
-    </MainNavigator.Navigator>
+    <UserNavigator.Navigator screenOptions={{headerShown: false}}>
+      <UserNavigator.Screen name={'webview'} component={WebViewPage} />
+    </UserNavigator.Navigator>
+  );
+};
+
+const DrawerNavigator = createDrawerNavigator();
+const RightDrawer = () => {
+  const isRtl = I18nManager.getConstants().isRTL;
+  const customScreenOptions = {
+    headerShown: false,
+    drawerStyle: {width: '100%'},
+    drawerPosition: isRtl ? 'right' : 'left',
+    unmountOnBlur: true,
+    swipeEdgeWidth: 0,
+  };
+
+  return (
+    <DrawerNavigator.Navigator
+      id="RightDrawer"
+      drawerContent={props => (
+        <ScreenContainer>
+          <TextElement>drawer</TextElement>
+        </ScreenContainer>
+      )}
+      screenOptions={customScreenOptions}>
+      <DrawerNavigator.Screen name={'tab-bar'} component={BottomTabs} />
+    </DrawerNavigator.Navigator>
+  );
+};
+
+const AppNavigator = () => {
+  return (
+    <NavigationContainer ref={navigationRef}>
+      <MainNavigator.Navigator
+        screenOptions={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'push',
+        }}>
+        <MainNavigator.Group screenOptions={{headerShown: false}}>
+          <MainNavigator.Screen name={'drawer'} component={RightDrawer} />
+          <MainNavigator.Screen name={'user'} component={UserStack} />
+        </MainNavigator.Group>
+      </MainNavigator.Navigator>
+    </NavigationContainer>
   );
 };
 
@@ -59,9 +94,7 @@ export default function App() {
       <I18nextProvider i18n={i18n}>
         <GestureHandlerRootView style={{flex: 1}}>
           <AppContainer>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
+            <AppNavigator />
           </AppContainer>
         </GestureHandlerRootView>
       </I18nextProvider>

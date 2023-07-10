@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   StatusBar,
+  I18nManager,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -131,6 +132,58 @@ export const ButtonElement = ({
       </View>
     </TouchableOpacity>
   );
+};
+
+export const LinkElement = ({
+  customStyle,
+  onPress,
+  children,
+  EndIcon,
+  addOpacity,
+  changeFontByRem,
+  accessibilityLabel,
+}) => {
+  const isRtl = I18nManager.getConstants().isRTL;
+  const brandRoyal = EStyleSheet.value('$link');
+  const styles = EStyleSheet.create({
+    link: {
+      color: brandRoyal,
+    },
+    endIcon: {
+      color: brandRoyal,
+      transform: [{scaleX: isRtl ? -1 : 1}],
+    },
+  });
+  const content = (
+    <>
+      {children}
+      {EndIcon && ' '}
+      {EndIcon && <EndIcon style={styles.endIcon} />}
+    </>
+  );
+  const link = addOpacity ? (
+    <TouchableOpacity
+      accessibilityLabel={accessibilityLabel || 'default'}
+      accessible={true}
+      activeOpacity={0.6}
+      onPress={onPress}>
+      <TextElement
+        customStyle={{...styles.link, ...customStyle}}
+        changeFontByRem={changeFontByRem || 0}>
+        {content}
+      </TextElement>
+    </TouchableOpacity>
+  ) : (
+    <TextElement
+      accessibilityLabel={accessibilityLabel || 'default'}
+      accessible={true}
+      onPress={onPress}
+      customStyle={{...styles.link, ...customStyle}}
+      changeFontByRem={changeFontByRem || 0}>
+      {content}
+    </TextElement>
+  );
+  return <>{link}</>;
 };
 
 const fullHight = Dimensions.get('window').height;
