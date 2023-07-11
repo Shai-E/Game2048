@@ -4,6 +4,7 @@ import SettingsScreen from '../containers/SettingScreen/SettingsScreen';
 import {createNavigationScreen} from '../services/utils/navigationHelpers/createNavigationScreen';
 import {MyCustomTopTabBar} from './TopTabNavigation';
 import AppTabBar from '../components/AppTabBar/AppTabBar';
+import GameBoard2048 from '../games/Game2048';
 
 const Tab = createBottomTabNavigator();
 
@@ -11,6 +12,7 @@ const bottomTabs = {
   Home: HomeScreen,
   Settings: SettingsScreen,
   Options: MyCustomTopTabBar,
+  Search: GameBoard2048,
 };
 
 export const BottomTabs = () => {
