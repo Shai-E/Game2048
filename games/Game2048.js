@@ -6,11 +6,15 @@ import {
   TouchableOpacity,
   I18nManager,
 } from 'react-native';
+import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
+  useAnimatedGestureHandler,
 } from 'react-native-reanimated';
+import {TextElement} from '../components/Reusable/reusable';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 const colors = {
   2: '#EEE4DA',
@@ -24,8 +28,13 @@ const colors = {
   512: '#EDC850',
   1024: '#EDC53F',
   2048: '#EDC22E',
-  undefined: '#CCCCCC', // Color for undefined tiles
+  4096: 'red',
+  8192: 'red',
+  16384: 'red',
+  32768: 'red',
 };
+
+const WINNING_SCORE = +Object.keys(colors)[10]; //2048
 
 const GameBoard = () => {
   const [board, setBoard] = useState([]);
@@ -107,9 +116,6 @@ const GameBoard = () => {
     }
     if (!isEqual(board, newBoard)) {
       addRandomTile(newBoard);
-      setScore(
-        prevScore => prevScore + calculateScoreIncrease(board, newBoard),
-      );
       setBoard(newBoard);
 
       const nextHistory = [...history, newBoard];
@@ -117,29 +123,17 @@ const GameBoard = () => {
       setHistory(prevHistory => {
         return nextHistory;
       });
-
-      if (checkWinCondition(newBoard)) {
-        setIsWin(true);
-      }
     }
   };
 
-  const calculateScoreIncrease = (oldBoard, newBoard) => {
-    let increase = 0;
-
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        increase += newBoard[i][j] - oldBoard[i][j];
-      }
-    }
-
-    return increase;
+  const increaseScore = addedValue => {
+    setScore(prevScore => prevScore + addedValue);
   };
 
   const checkWinCondition = board => {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (board[i][j] === 2048) {
+        if (board[i][j] === WINNING_SCORE) {
           return true;
         }
       }
@@ -151,9 +145,23 @@ const GameBoard = () => {
   const ScoreView = () => {
     return (
       <View style={styles.scoreView}>
-        <Text style={styles.scoreText}>Score: {score}</Text>
-        {isWin && <Text style={styles.winText}>You Win!</Text>}
+        <TextElement customStyle={styles.scoreText}>Score: {score}</TextElement>
+        {isWin && (
+          <TextElement customStyle={styles.winText}>You Win!</TextElement>
+        )}
       </View>
+    );
+  };
+
+  const RestartButton = () => {
+    const handleRestart = () => {
+      initializeBoard();
+    };
+
+    return (
+      <TouchableOpacity style={styles.gameButton} onPress={handleRestart}>
+        <Text style={styles.gameButtonText}>Restart</Text>
+      </TouchableOpacity>
     );
   };
 
@@ -163,20 +171,20 @@ const GameBoard = () => {
         const prevBoard = history[history.length - 2];
         setBoard(prevBoard);
         setHistory(prevHistory => prevHistory.slice(0, -1));
-        setIsWin(false);
+        setIsWin(checkWinCondition(prevBoard));
       }
     };
 
     return (
-      <TouchableOpacity style={styles.undoButton} onPress={handleUndo}>
-        <Text style={styles.undoButtonText}>Undo</Text>
+      <TouchableOpacity style={styles.gameButton} onPress={handleUndo}>
+        <Text style={styles.gameButtonText}>Undo</Text>
       </TouchableOpacity>
     );
   };
 
   const RedoButton = () => {
     const handleRedo = () => {
-      if (history.length > 1 && historyRef.current.length > history.length) {
+      if (history.length > 0 && historyRef.current.length > history.length) {
         const nextBoard = historyRef.current[history.length];
         setBoard(nextBoard);
         setHistory(prevHistory => {
@@ -186,13 +194,15 @@ const GameBoard = () => {
               historyRef.current.length,
           );
         });
-        setIsWin(false);
+        if (checkWinCondition(nextBoard)) {
+          setIsWin(true);
+        }
       }
     };
 
     return (
-      <TouchableOpacity style={styles.undoButton} onPress={handleRedo}>
-        <Text style={styles.undoButtonText}>Redo</Text>
+      <TouchableOpacity style={styles.gameButton} onPress={handleRedo}>
+        <Text style={styles.gameButtonText}>Redo</Text>
       </TouchableOpacity>
     );
   };
@@ -222,14 +232,18 @@ const GameBoard = () => {
 
   const mergeTiles = board => {
     const newBoard = [...board];
+    let addedScore = 0;
     for (let i = 0; i < 4; i++) {
       for (let j = 3; j > 0; j--) {
         if (newBoard[i][j] === newBoard[i][j - 1]) {
           newBoard[i][j] *= 2;
+          addedScore += newBoard[i][j];
+          newBoard[i][j] === WINNING_SCORE && setIsWin(true);
           newBoard[i][j - 1] = 0;
         }
       }
     }
+    increaseScore(addedScore);
     return newBoard;
   };
 
@@ -246,8 +260,7 @@ const GameBoard = () => {
 
   const renderBoard = () => {
     return (
-      <View>
-        <ScoreView />
+      <>
         <View style={styles.board}>
           {
             /* Existing board rendering code */
@@ -269,140 +282,163 @@ const GameBoard = () => {
             ))
           }
         </View>
-        <UndoButton />
-        <RedoButton />
-      </View>
+        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center'}}>
+          <UndoButton />
+          <RedoButton />
+          <RestartButton />
+        </View>
+      </>
     );
   };
 
   const Tile = ({value, backgroundColor}) => {
-    const scale = useSharedValue(0);
-    const opacity = useSharedValue(0);
-
-    const animatedStyle = useAnimatedStyle(() => {
-      return {
-        transform: [{scale: scale.value}],
-        opacity: opacity.value,
-      };
-    });
-
-    useEffect(() => {
-      scale.value = withTiming(1, {duration: 200});
-      opacity.value = withTiming(1, {duration: 200});
-    }, [value]);
-
-    useEffect(() => {
-      if (value === '') {
-        scale.value = withTiming(0, {duration: 200});
-        opacity.value = withTiming(0, {duration: 200});
-      }
-    }, [value]);
-
     return (
-      <Animated.View style={[styles.cell, {backgroundColor}, animatedStyle]}>
+      <View style={[styles.cell, {backgroundColor}]}>
         <Text style={styles.cellText}>{value}</Text>
-      </Animated.View>
+      </View>
     );
   };
 
+  const onGestureEvent = event => {
+    if (
+      event.nativeEvent.translationX > 0 &&
+      Math.abs(event.nativeEvent.translationX) >
+        Math.abs(event.nativeEvent.translationY)
+    ) {
+      // Swipe right
+      handleSwipe('right');
+      // Perform actions for swipe right
+    } else if (
+      event.nativeEvent.translationX < 0 &&
+      Math.abs(event.nativeEvent.translationX) >
+        Math.abs(event.nativeEvent.translationY)
+    ) {
+      // Swipe left
+      handleSwipe('left');
+      // Perform actions for swipe left
+    } else if (
+      event.nativeEvent.translationY > 0 &&
+      Math.abs(event.nativeEvent.translationY) >
+        Math.abs(event.nativeEvent.translationX)
+    ) {
+      // Swipe down
+      handleSwipe('down');
+    } else if (
+      event.nativeEvent.translationY < 0 &&
+      Math.abs(event.nativeEvent.translationY) >
+        Math.abs(event.nativeEvent.translationX)
+    ) {
+      // Swipe up
+      handleSwipe('up');
+    }
+  };
+
+  const styles = EStyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '$background',
+    },
+    board: {
+      borderWidth: 5,
+      borderColor: '#BBADA0',
+      backgroundColor: '$fillSecondary',
+    },
+    row: {
+      flexDirection: 'row',
+    },
+    cell: {
+      width: 80,
+      height: 80,
+      margin: 5,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cellText: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      color: '#776E65',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      marginTop: 20,
+    },
+    button: {
+      margin: 10,
+      padding: 10,
+      backgroundColor: '#BBADA0',
+      borderRadius: 5,
+    },
+    buttonText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: 'white',
+    },
+    scoreView: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 10,
+      width: '100%',
+      paddingHorizontal: '1.5rem',
+      color: '$primaryText',
+    },
+    scoreText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    winText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: 'green',
+    },
+    gameButton: {
+      alignSelf: 'flex-start',
+      marginTop: 10,
+      padding: 10,
+      backgroundColor: '$fillPrimary',
+      borderRadius: 5,
+    },
+    gameButtonText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '$primaryText',
+    },
+  });
+
   return (
-    <View style={styles.container}>
-      <View style={styles.board}>{renderBoard()}</View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleSwipe('up')}>
-          <Text style={styles.buttonText}>Up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleSwipe('left')}>
-          <Text style={styles.buttonText}>Left</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleSwipe('down')}>
-          <Text style={styles.buttonText}>Down</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleSwipe('right')}>
-          <Text style={styles.buttonText}>Right</Text>
-        </TouchableOpacity>
+    <PanGestureHandler onHandlerStateChange={onGestureEvent}>
+      <View style={styles.container}>
+        <ScoreView />
+
+        <View style={{}}>{renderBoard()}</View>
+        {/* <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleSwipe('up')}>
+            <Text style={styles.buttonText}>Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleSwipe('left')}>
+            <Text style={styles.buttonText}>Left</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleSwipe('down')}>
+            <Text style={styles.buttonText}>Down</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleSwipe('right')}>
+            <Text style={styles.buttonText}>Right</Text>
+          </TouchableOpacity>
+        </View> */}
       </View>
-    </View>
+    </PanGestureHandler>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F8F8F8',
-  },
-  board: {
-    borderWidth: 5,
-    borderColor: '#BBADA0',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  cell: {
-    width: 80,
-    height: 80,
-    margin: 5,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cellText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#776E65',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  button: {
-    margin: 10,
-    padding: 10,
-    backgroundColor: '#BBADA0',
-    borderRadius: 5,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  scoreView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  scoreText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  winText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'green',
-  },
-  undoButton: {
-    alignSelf: 'flex-start',
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: '#BBADA0',
-    borderRadius: 5,
-  },
-  undoButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-});
 
 export default GameBoard;

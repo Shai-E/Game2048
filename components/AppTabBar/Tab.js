@@ -16,11 +16,14 @@ import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 // Localization
 import {useTranslation} from 'react-i18next';
+import {useDispatch, useSelector} from 'react-redux';
+import {setCurrentRoute} from '../../store/reducers/appSlice';
 
 const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   const navigation = useNavigation();
   const currRoute = useRoute();
-  const screen = currRoute.params?.screen || 'rates';
+  const currentRoute = useSelector(state => state.appSlice.currentRoute);
+  const screen = currRoute.params?.screen || currentRoute;
   const [primaryText, warning] = [
     EStyleSheet.value('$primaryText'),
     EStyleSheet.value('$warning'),
@@ -35,7 +38,11 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
     <MenuIcon style={{color: screen === route ? warning : primaryText}} />,
   ];
 
+  const dispatch = useDispatch();
+
   const routeNavigation = useCallback(() => {
+    if (currentRoute === route) return;
+    dispatch(setCurrentRoute(route));
     if (route === 'Menu') {
       return navigation.openDrawer();
     }

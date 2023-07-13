@@ -3,6 +3,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import {paletteBuildObject} from '../../fixtures/colorPalette';
 import {initAppDirection} from '../localization/appDirection/initAppDirection';
 
+export const changePalette = () => {
+  EStyleSheet.build(paletteBuildObject());
+};
+
 export const initApp = () => {
   LogBox.ignoreLogs([
     // 'ViewPropTypes will be removed',
@@ -10,7 +14,7 @@ export const initApp = () => {
     // 'Overwriting fontFamily style attribute preprocessor',
   ]);
 
-  EStyleSheet.build(paletteBuildObject);
+  changePalette();
 
   initAppDirection();
 };

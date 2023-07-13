@@ -1,4 +1,5 @@
 package com.trading;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
@@ -8,6 +9,7 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
    import android.content.Intent; 
     import android.content.res.Configuration;
+import android.preference.PreferenceManager;
 
 public class MainActivity extends ReactActivity {
 
@@ -22,6 +24,9 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+      SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+      String theme = preferences.getString(ThemeModule.THEME_PREFERENCE_KEY, "dark");
+      setTheme(theme.equals("dark") ? R.style.AppTheme_Dark : R.style.AppTheme_Light);
     super.onCreate(null);
   }
 

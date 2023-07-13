@@ -1,9 +1,30 @@
 <resources>
-
+    <color name="splashscreen_background">#090921</color>
+    <color name="iconBackground">#FFFFFF</color>
+    <color name="colorPrimary">#090921</color>
+    <color name="colorPrimaryDark">#1c2541</color>
+    <color name="testcolor">#dd00ff</color>
+    <color name="statusBarLightContent">#ffffff</color>
+    <color name="statusBarDarkContent">#000000</color>
+    <color name="statusBarBGLight">#ffffff</color>
+    <color name="statusBarBGDark">#090921</color>
+    <color name="colorPrimaryLight">#3498DB</color>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+    </style>
+
+    <style name="AppTheme_Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:colorPrimary">@color/colorPrimaryLight</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryLight</item>
+    </style>
+
+    <style name="AppTheme_Dark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:colorPrimary">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

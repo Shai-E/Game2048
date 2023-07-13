@@ -288,6 +288,7 @@ export const AppContainer = ({
   };
   const modalizeRef = useRef(null);
   const shouldOpenModal = useSelector(state => state.appSlice.openModal);
+  const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
   const dispatch = useDispatch();
   useEffect(() => {
     modalizeRef.current[shouldOpenModal ? 'open' : 'close']();
@@ -314,7 +315,7 @@ export const AppContainer = ({
           topBackgroundColor || EStyleSheet.value('$background')
         }>
         <StatusBar
-          barStyle={'light-content'}
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={
             topBackgroundColor || EStyleSheet.value('$background')
           }

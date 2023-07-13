@@ -1,7 +1,6 @@
 import Config from 'react-native-config';
 import store from '../store/store';
 
-const isDarkMode = store.getState().appSlice.isDarkMode;
 const BRAND = Config.BRAND;
 
 const colorPalette = {
@@ -59,8 +58,11 @@ const formatPaletteForEStyleSheet = palette => {
   return formattedPalette;
 };
 
-export const paletteBuildObject = formatPaletteForEStyleSheet(
-  colorPalette[BRAND][isDarkMode ? 'dark' : 'light'],
-);
+export const paletteBuildObject = () => {
+  const isDarkMode = store.getState().appSlice.isDarkMode;
+  return formatPaletteForEStyleSheet(
+    colorPalette[BRAND][isDarkMode ? 'dark' : 'light'],
+  );
+};
 
 export default JSON.stringify(colorPalette);

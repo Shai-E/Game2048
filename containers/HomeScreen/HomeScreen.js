@@ -2,16 +2,22 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {saveToStorage} from '../../services/utils/storage/setAsyncStorage';
 import {determineRtl} from '../../services/localization/appDirection/setAppDirection';
-import {useDispatch} from 'react-redux';
-import {setIsLoading, setOpenModal} from '../../store/reducers/appSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  setIsDarkMode,
+  setIsLoading,
+  setOpenModal,
+} from '../../store/reducers/appSlice';
 import {LinkElement, ScreenContainer} from '../../components/Reusable/reusable';
 import {ButtonElement, TextElement} from '../../components/Reusable/reusable';
-import {Linking} from 'react-native';
+import {Linking, NativeModules} from 'react-native';
+import {changePalette} from '../../services/initApp/initApp';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {i18n, t} = useTranslation();
+  const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
   const changeLanguage = async () => {
     const changeLangTo = i18n.language === 'en' ? 'he' : 'en';
     await saveToStorage('prevLanguage', i18n.language);
@@ -46,6 +52,16 @@ const HomeScreen = () => {
       <ButtonElement
         title={t('navigate.to.settings')}
         onPress={navigateToOptions}
+      />
+      <ButtonElement
+        title={t('change.theme')}
+        onPress={() => {
+          const {ThemeModule} = NativeModules;
+          const nextThemeToUse = isDarkMode ? 'light' : 'dark';
+          ThemeModule.changeTheme(nextThemeToUse);
+          dispatch(setIsDarkMode(!isDarkMode));
+          changePalette();
+        }}
       />
       <ButtonElement title={t('checkout.tab')} onPress={navigateToOptions2} />
       <TextElement>
