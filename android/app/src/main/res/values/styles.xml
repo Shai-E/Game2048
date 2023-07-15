@@ -8,7 +8,7 @@
     <color name="statusBarDarkContent">#000000</color>
     <color name="statusBarBGLight">#ffffff</color>
     <color name="statusBarBGDark">#090921</color>
-    <color name="colorPrimaryLight">#3498DB</color>
+    <color name="colorPrimaryLight">#5DADE2</color>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->

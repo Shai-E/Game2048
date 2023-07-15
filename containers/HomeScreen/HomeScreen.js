@@ -10,10 +10,12 @@ import {
 } from '../../store/reducers/appSlice';
 import {LinkElement, ScreenContainer} from '../../components/Reusable/reusable';
 import {ButtonElement, TextElement} from '../../components/Reusable/reusable';
-import {Linking, NativeModules} from 'react-native';
-import {changePalette} from '../../services/initApp/initApp';
+import {Linking, NativeModules, Platform} from 'react-native';
+
+const {ThemeModule} = NativeModules;
 
 const HomeScreen = () => {
+  // initPalette();
   const navigation = useNavigation();
   const route = useRoute();
   const {i18n, t} = useTranslation();
@@ -38,10 +40,16 @@ const HomeScreen = () => {
   const navigateToOptions2 = () =>
     navigation.navigate('tab-bar', {
       screen: 'Options',
-      params: {tab: 'tab3'},
+      params: {tab: 'tab3', section: 'Screen2'},
     });
   const openModal = () => {
     dispatch(setOpenModal(true));
+  };
+  const handleThemeChange = async () => {
+    const nextThemeToUse = isDarkMode ? 'light' : 'dark';
+    dispatch(setIsDarkMode(nextThemeToUse === 'dark'));
+    await saveToStorage('theme', nextThemeToUse);
+    Platform.OS === 'android' && ThemeModule.changeTheme(nextThemeToUse);
   };
   return (
     <ScreenContainer>
@@ -54,14 +62,8 @@ const HomeScreen = () => {
         onPress={navigateToOptions}
       />
       <ButtonElement
-        title={t('change.theme')}
-        onPress={() => {
-          const {ThemeModule} = NativeModules;
-          const nextThemeToUse = isDarkMode ? 'light' : 'dark';
-          ThemeModule.changeTheme(nextThemeToUse);
-          dispatch(setIsDarkMode(!isDarkMode));
-          changePalette();
-        }}
+        title={t('change.theme') + ': ' + isDarkMode}
+        onPress={handleThemeChange}
       />
       <ButtonElement title={t('checkout.tab')} onPress={navigateToOptions2} />
       <TextElement>

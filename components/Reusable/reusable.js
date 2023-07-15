@@ -29,6 +29,7 @@ import {TapGestureHandler} from 'react-native-gesture-handler';
 import {setOpenModal} from '../../store/reducers/appSlice';
 import {defineAccessibilityId} from '../../services/utils/accessibility/defineAccessibilityProps';
 import {defineFont} from '../../services/utils/fontsSupport/defineFont';
+import {initPalette} from '../../services/initApp/initApp';
 
 export const TextElement = ({
   customStyle,
@@ -193,7 +194,7 @@ export const LinkElement = ({
       children.split(' ').map((word, index, sentence) => (
         <TouchableOpacity
           key={word + 'link'}
-          hitSlop={{top: 40, left: 40, bottom: 40, right: 40}}
+          hitSlop={{top: 10, left: 10, bottom: 10, right: 10}}
           accessibilityLabel={accessibilityLabel || 'default'}
           accessible={true}
           activeOpacity={1}
@@ -279,13 +280,18 @@ export const AppContainer = ({
   behavior,
   keyboardVerticalOffset,
   style,
-  topBackgroundColor,
-  bottomBackgroundColor,
   children,
 }) => {
+  initPalette();
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
+  const topBackgroundColor = useSelector(
+    state => state.appSlice.topBackgroundColor,
+  );
+  const bottomBackgroundColor = useSelector(
+    state => state.appSlice.bottomBackgroundColor,
+  );
   const modalizeRef = useRef(null);
   const shouldOpenModal = useSelector(state => state.appSlice.openModal);
   const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
@@ -336,13 +342,17 @@ export const AppContainer = ({
       </Modalize>
       <SafeAreaView
         backgroundColor={
-          bottomBackgroundColor || EStyleSheet.value('$background')
+          bottomBackgroundColor ||
+          (isDarkMode
+            ? EStyleSheet.value('$fillPrimary')
+            : EStyleSheet.value('$fillSecondary'))
         }></SafeAreaView>
     </>
   );
 };
 
 export const ScreenContainer = ({children, customStyle}) => {
+  initPalette();
   const styles = EStyleSheet.create({
     screen: {
       flex: 1,

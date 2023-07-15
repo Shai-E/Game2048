@@ -1,6 +1,6 @@
 import React, {useState, useCallback, Fragment} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
-import {View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 import {useSelector} from 'react-redux';
 
 // Components
@@ -16,22 +16,22 @@ import {
 // Fixtures
 import {useTabs} from '../../fixtures/navigationTabs';
 import {useTranslation} from 'react-i18next';
+import {initPalette} from '../../services/initApp/initApp';
 
 const AppTabBar = () => {
+  initPalette();
   const {i18n} = useTranslation();
   const language = i18n.language;
   const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
+  const bottomBackgroundColor = useSelector(
+    state => state.appSlice.bottomBackgroundColor,
+  );
   const [rerender, setRerender] = useState(false);
-
-  const [white, light] = [
-    EStyleSheet.value('$fillPrimary'),
-    EStyleSheet.value('$fillSecondary'),
-  ];
 
   useFocusEffect(
     useCallback(() => {
       setRerender(!rerender);
-    }, [language]),
+    }, [language, bottomBackgroundColor]),
   );
 
   const tabs = useTabs();
@@ -43,7 +43,10 @@ const AppTabBar = () => {
           style={[
             styles.tabBarContainer,
             {
-              backgroundColor: isDarkMode ? white : light,
+              backgroundColor:
+                bottomBackgroundColor || isDarkMode
+                  ? EStyleSheet.value('$fillPrimary')
+                  : EStyleSheet.value('$fillSecondary'),
               borderColor: '#dcdcdc',
               flexDirection: 'row',
               // alignItems: 'center',
@@ -67,7 +70,7 @@ const AppTabBar = () => {
 
 const styles = EStyleSheet.create({
   tabBarContainer: {
-    height: hp('8%'),
+    height: hp('6%'),
     width: wp('100%'),
     justifyContent: 'space-between',
     alignItems: 'center',

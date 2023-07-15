@@ -12,7 +12,7 @@
     "kill-metro": "lsof -ti :8081 | xargs kill -9",
     "remove-packages": "rm -rf node_modules && rm -f package-lock.json",
     "fix": "cd android && touch local.properties && echo \"sdk.dir = /Users/$(whoami)/Library/Android/sdk\" > local.properties && cd ..",
-    "fix-orientation": "sed -i '' '/dependencies {/,/}/ s/compile/implementation/g' ./node_modules/react-native-orientation/android/build.gradle",
+    "fix-orientation": "sed -i '' 's/compileSdkVersion 23/compileSdkVersion 32/g; s/buildToolsVersion \"23.0.1\"/buildToolsVersion \"30.0.1\"/g; s/targetSdkVersion 22/targetSdkVersion 32/g' ./node_modules/react-native-orientation/android/build.gradle && sed -i '' '/dependencies {/,/}/ s/compile/implementation/g' ./node_modules/react-native-orientation/android/build.gradle",
     "xcode": "cd ios && open trading.xcodeproj && cd ..",
     "simulator": "cd ios && xcodebuild -project trading.xcodeproj -scheme trading -destination \"platform=iOS Simulator,name=iPhone X\" && cd ..",
     "build-os": "cd android && ./gradlew clean && cd .. && cd ios && rm -f Podfile.lock && pod install && cd ..",

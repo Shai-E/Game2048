@@ -32,13 +32,6 @@ export const useTabs = () => {
       accessibilityLabel: 'appSearch',
     },
     {
-      tab: 'test',
-      section: 'tab-bar',
-      route: 'Test',
-      icon: 2,
-      accessibilityLabel: 'appTest',
-    },
-    {
       tab: t('tabs.menu'),
       section: 'drawer',
       route: 'Menu',

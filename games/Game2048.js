@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -15,6 +15,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import {TextElement} from '../components/Reusable/reusable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import {initPalette} from '../services/initApp/initApp';
+import {useFocusEffect} from '@react-navigation/native';
 
 const colors = {
   2: '#EEE4DA',
@@ -43,9 +45,12 @@ const GameBoard = () => {
   const [history, setHistory] = useState([]);
   const historyRef = useRef([]);
 
-  useEffect(() => {
-    initializeBoard();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      initPalette();
+      initializeBoard();
+    }, []),
+  );
 
   const initializeBoard = () => {
     const initialBoard = Array(4)

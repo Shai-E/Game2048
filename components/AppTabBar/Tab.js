@@ -41,11 +41,11 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   const dispatch = useDispatch();
 
   const routeNavigation = useCallback(() => {
-    if (currentRoute === route) return;
-    dispatch(setCurrentRoute(route));
+    if (screen === route) return;
     if (route === 'Menu') {
       return navigation.openDrawer();
     }
+    dispatch(setCurrentRoute(route));
     navigation.navigate(section, {screen: route});
   }, [screen]);
 

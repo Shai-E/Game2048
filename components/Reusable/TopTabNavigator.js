@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   I18nManager,
   Platform,
@@ -12,6 +12,9 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import {useFocusEffect} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {setTopBG} from '../../store/reducers/appSlice';
 
 const DEFAULT_TAB_WIDTH = wp('33.33%');
 const DEFAULT_BAR_HEIGHT = hp('6%');
@@ -79,9 +82,13 @@ const TopTabScreens = ({
         style={{
           height: '100%',
           width: DEFAULT_BAR_WIDTH,
-          flexDirection:
-            Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
         }}
+        contentContainerStyle={
+          {
+            // flexDirection:
+            //   Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
+          }
+        }
         onMomentumScrollBegin={() => {
           canmomentum.current = true;
         }}
@@ -106,7 +113,7 @@ const TopTabScreens = ({
   );
 };
 
-const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
+const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
   const tabsRef = useRef();
   const OFFSET =
     Math.floor(DEFAULT_BAR_WIDTH - DEFAULT_TAB_WIDTH) / 2 / DEFAULT_TAB_WIDTH;
@@ -117,6 +124,17 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
       animated: true,
     });
   };
+
+  useEffect(() => {
+    if (tabsRef.current && initRoute) {
+      const index = topTabKeysArray.indexOf(initRoute);
+      const correctedIndex =
+        isRtl && Platform.OS === 'android'
+          ? topTabKeysArray.length - 1 - index
+          : index;
+      setCurrentTab(correctedIndex);
+    }
+  }, [initRoute, tabsRef.current]);
 
   useEffect(handleTopTabFocus, [currentTab]);
 
@@ -130,12 +148,12 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray}) => {
         height: DEFAULT_BAR_HEIGHT,
         minWidth: DEFAULT_BAR_WIDTH,
         backgroundColor: EStyleSheet.value('$fillSecondary'),
-        flexDirection:
-          Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
       }}
       contentContainerStyle={{
         justifyContent: 'center',
         backgroundColor: EStyleSheet.value('$warning'), // background color on press.
+        // flexDirection:
+        //   Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
         minWidth:
           DEFAULT_BAR_WIDTH / topTabKeysArray.length > DEFAULT_TAB_WIDTH
             ? undefined
@@ -178,6 +196,18 @@ const TopTabNavigator = ({navigation, route, topTabs}) => {
       ? topTabKeysArray.length - 1 - initialRouteIndex
       : initialRouteIndex,
   );
+
+  const dispatch = useDispatch();
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(setTopBG(EStyleSheet.value('$fillSecondary')));
+      return () => {
+        dispatch(setTopBG(EStyleSheet.value('$background')));
+      };
+    }, []),
+  );
+
   return (
     <ScreenContainer
       customStyle={{justifyContent: 'flex-start', width: DEFAULT_BAR_WIDTH}}>
@@ -185,6 +215,7 @@ const TopTabNavigator = ({navigation, route, topTabs}) => {
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         topTabKeysArray={topTabKeysArray}
+        initRoute={route.params?.tab}
       />
       <TopTabScreens
         navigation={navigation}
