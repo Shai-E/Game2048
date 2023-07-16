@@ -305,6 +305,7 @@ const GameBoard = () => {
   };
 
   const onGestureEvent = event => {
+    if (event.nativeEvent.state !== 5) return;
     if (
       event.nativeEvent.translationX > 0 &&
       Math.abs(event.nativeEvent.translationX) >

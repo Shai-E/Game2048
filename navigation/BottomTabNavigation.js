@@ -3,6 +3,7 @@ import HomeScreen from '../containers/HomeScreen/HomeScreen';
 import SettingsScreen from '../containers/SettingScreen/SettingsScreen';
 // import {createNavigationScreen} from '../services/utils/navigationHelpers/createNavigationScreen';
 import {MyCustomTopTabBar} from './TopTabNavigation';
+// import MyCustomTopTabBar2 from './TopTabNavigation2';
 import AppTabBar from '../components/AppTabBar/AppTabBar';
 import GameBoard2048 from '../games/Game2048';
 
@@ -26,6 +27,7 @@ export const BottomTabs = () => {
       <Tab.Screen name={'Settings'} component={SettingsScreen} />
       <Tab.Screen name={'Options'} component={MyCustomTopTabBar} />
       <Tab.Screen name={'Search'} component={GameBoard2048} />
+      {/* <Tab.Screen name={'Test'} component={MyCustomTopTabBar2} /> */}
     </Tab.Navigator>
   );
 };

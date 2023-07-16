@@ -72,26 +72,22 @@ function MyCustomTopTabBar({navigation, route}) {
           color: EStyleSheet.value('$fillPrimary'),
         },
         tabBarStyle: {
-          //   transform: [{scaleX: -1}],
           backgroundColor: EStyleSheet.value('$fillPrimary'),
         },
         tabBarContentContainerStyle: {
-          flexDirection:
-            isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row',
-          // maxWidth: widthPercentageToDP('100%'),
-          // width: TAB_WIDTH * 2,
-          // direction: 'ltr',
-          // backgroundColor: 'red',
+          //   flexDirection:
+          //     isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row',
         },
         tabBarItemStyle: {width: TAB_WIDTH, padding: 0},
         tabBarIndicatorStyle: {
           backgroundColor: EStyleSheet.value('$success'),
-          flexDirection:
-            isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row', //   left: TAB_WIDTH * NUMBER_OF_TABS - BAR_WIDTH,
+          //   flexDirection:
+          //     isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row',
+          //   left: TAB_WIDTH * NUMBER_OF_TABS - BAR_WIDTH,
         },
         tabBarIndicatorContainerStyle: {
-          flexDirection:
-            isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row',
+          //   flexDirection:
+          //     isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row',
           left: TAB_WIDTH * NUMBER_OF_TABS - BAR_WIDTH,
           backgroundColor: EStyleSheet.value('$fillSecondary'),
         },
