@@ -3,11 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {I18nextProvider} from 'react-i18next';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {
-  AppContainer,
-  ScreenContainer,
-  TextElement,
-} from './components/Reusable/reusable';
+import {AppContainer} from './components/Reusable/Containers';
 import i18n from './services/localization/i18n.config';
 import {determineRtl} from './services/localization/appDirection/setAppDirection';
 import store from './store/store';

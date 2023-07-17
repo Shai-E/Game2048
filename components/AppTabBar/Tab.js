@@ -11,23 +11,21 @@ import {
   MenuIcon as MenuIcon,
   SearchIcon,
 } from '../../assets/icons/tabsIcons';
-import {TextElement} from '../Reusable/reusable';
+import {TextElement} from '../Reusable/TextElement';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 // Localization
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentRoute} from '../../store/reducers/appSlice';
+import {useColors} from '../../services/customHook/useColors';
 
 const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   const navigation = useNavigation();
   const currRoute = useRoute();
   const currentRoute = useSelector(state => state.appSlice.currentRoute);
   const screen = currRoute.params?.screen || currentRoute;
-  const [primaryText, warning] = [
-    EStyleSheet.value('$primaryText'),
-    EStyleSheet.value('$warning'),
-  ];
+  const {primaryText, warning} = useColors();
   const {t} = useTranslation();
 
   const navigationTabs = [

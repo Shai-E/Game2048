@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {ScreenContainer, TextElement} from './reusable';
+import {ScreenContainer} from './Containers';
+import {TextElement} from './TextElement';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -15,28 +16,60 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {setTopBG} from '../../store/reducers/appSlice';
+import {initPalette} from '../../services/initApp/initApp';
+import {useColors} from '../../services/customHook/useColors';
 
-const DEFAULT_TAB_WIDTH = wp('33.33%');
+const DEFAULT_TAB_WIDTH = wp('22%');
 const DEFAULT_BAR_HEIGHT = hp('6%');
 const DEFAULT_BAR_WIDTH = wp('100%');
 const isRtl = I18nManager.getConstants().isRTL;
+const DEFAULT_STYLE = 'round';
 
 const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
+  const {fillPrimary, fillSecondary, background} = useColors();
+  const defaultThemes = {
+    round: {
+      touchableStyle: {
+        backgroundColor: background,
+      },
+      innerViewStyle: {
+        marginHorizontal: wp('1%'),
+        width: DEFAULT_TAB_WIDTH - wp('2%'),
+        backgroundColor: active ? fillPrimary : fillSecondary,
+        borderColor: 'white',
+        paddingVertical: 4,
+        borderWidth: 1,
+        borderRadius: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+    },
+    basic: {
+      touchableStyle: {
+        backgroundColor: active ? fillPrimary : fillSecondary,
+      },
+      innerViewStyle: {},
+    },
+  };
+  initPalette();
   return (
     <TouchableOpacity
       style={{
         alignItems: 'center',
         justifyContent: 'center',
         width: DEFAULT_TAB_WIDTH,
-        backgroundColor: active
-          ? EStyleSheet.value('$fillPrimary')
-          : EStyleSheet.value('$fillSecondary'),
+        ...defaultThemes[DEFAULT_STYLE].touchableStyle,
       }}
       activeOpacity={0.6}
       onPress={() => {
         setCurrentTab(tabIndex);
       }}>
-      <TextElement>{name}</TextElement>
+      <View
+        style={{
+          ...defaultThemes[DEFAULT_STYLE].innerViewStyle,
+        }}>
+        <TextElement>{name}</TextElement>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -114,6 +147,8 @@ const TopTabScreens = ({
 };
 
 const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
+  const {fillSecondary, warning} = useColors();
+
   const tabsRef = useRef();
   const OFFSET =
     Math.floor(DEFAULT_BAR_WIDTH - DEFAULT_TAB_WIDTH) / 2 / DEFAULT_TAB_WIDTH;
@@ -147,11 +182,11 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
       style={{
         height: DEFAULT_BAR_HEIGHT,
         minWidth: DEFAULT_BAR_WIDTH,
-        backgroundColor: EStyleSheet.value('$fillSecondary'),
+        backgroundColor: fillSecondary,
       }}
       contentContainerStyle={{
         justifyContent: 'center',
-        backgroundColor: EStyleSheet.value('$warning'), // background color on press.
+        backgroundColor: warning, // background color on press.
         // flexDirection:
         //   Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
         minWidth:
@@ -182,6 +217,7 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
   );
 };
 const TopTabNavigator = ({navigation, route, topTabs}) => {
+  const {fillSecondary, background} = useColors();
   const topTabKeysArray = Object.keys(topTabs);
   const correctedDefaultIndex =
     Platform.OS === 'android' && isRtl ? topTabKeysArray.length - 1 : 0;
@@ -201,7 +237,8 @@ const TopTabNavigator = ({navigation, route, topTabs}) => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(setTopBG(EStyleSheet.value('$fillSecondary')));
+      DEFAULT_STYLE === 'basic' &&
+        dispatch(setTopBG(EStyleSheet.value('$fillSecondary')));
       return () => {
         dispatch(setTopBG(EStyleSheet.value('$background')));
       };

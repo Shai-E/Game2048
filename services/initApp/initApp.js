@@ -23,7 +23,6 @@ export const initApp = async () => {
 
   initPalette();
   const themeFromStorage = await getFromStorage('theme');
-  console.log(themeFromStorage !== 'dark', 'from initapp');
 
   store.dispatch(setIsDarkMode(themeFromStorage !== 'light'));
   ReactNative.Platform.OS === 'android' &&

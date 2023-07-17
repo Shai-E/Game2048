@@ -1,5 +1,7 @@
 import {useTranslation} from 'react-i18next';
-import {ScreenContainer, TextElement} from '../../components/Reusable/reusable';
+import {ScreenContainer} from '../../components/Reusable/Containers';
+import {TextElement} from '../../components/Reusable/TextElement';
+import {initPalette} from '../../services/initApp/initApp';
 
 const SettingsScreen = ({}) => {
   const {t} = useTranslation();

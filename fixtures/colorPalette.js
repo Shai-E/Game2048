@@ -3,7 +3,7 @@ import store from '../store/store';
 
 const BRAND = Config.BRAND;
 
-const colorPalette = {
+export const colorPalette = {
   Psy: {
     dark: {
       fillPrimary: '#1c2541',

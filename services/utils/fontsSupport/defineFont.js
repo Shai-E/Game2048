@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import {I18nManager} from 'react-native';
 import {appSupportedLanguages} from '../../localization/languages';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 export const defineFont = (fontWeight, changeFontByRem) => {
   const language = i18n.language;
@@ -20,9 +21,9 @@ export const defineFont = (fontWeight, changeFontByRem) => {
 
   const fontFamily = fontsWeights[fontWeight || 'normal'] || defaultFont;
 
-  const fontSize = `${
-    (userLanguage?.defaultSize || 1) + (changeFontByRem || 0)
-  }rem`;
+  const fontSize =
+    ((userLanguage?.defaultSize || 1) + (changeFontByRem || 0)) *
+    EStyleSheet.value('rem');
 
   return {isRtl, fontFamily, fontSize};
 };

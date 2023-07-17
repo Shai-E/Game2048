@@ -7,10 +7,15 @@ import {
   setIsDarkMode,
   setIsLoading,
   setOpenModal,
+  setTopBG,
 } from '../../store/reducers/appSlice';
-import {LinkElement, ScreenContainer} from '../../components/Reusable/reusable';
-import {ButtonElement, TextElement} from '../../components/Reusable/reusable';
+import {ScreenContainer} from '../../components/Reusable/Containers';
+import {LinkElement} from '../../components/Reusable/LinkElement';
+import {ButtonElement} from '../../components/Reusable/ButtonElement';
+import {TextElement} from '../../components/Reusable/TextElement';
 import {Linking, NativeModules, Platform} from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {initPalette} from '../../services/initApp/initApp';
 
 const {ThemeModule} = NativeModules;
 
@@ -47,7 +52,9 @@ const HomeScreen = () => {
   };
   const handleThemeChange = async () => {
     const nextThemeToUse = isDarkMode ? 'light' : 'dark';
-    dispatch(setIsDarkMode(nextThemeToUse === 'dark'));
+    await dispatch(setIsDarkMode(nextThemeToUse === 'dark'));
+    initPalette();
+    dispatch(setTopBG(EStyleSheet.value('$background')));
     await saveToStorage('theme', nextThemeToUse);
     Platform.OS === 'android' && ThemeModule.changeTheme(nextThemeToUse);
   };

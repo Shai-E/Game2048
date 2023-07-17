@@ -4,7 +4,9 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {useFocusEffect} from '@react-navigation/native';
-import {ScreenContainer, TextElement} from '../components/Reusable/reusable';
+import {ScreenContainer} from '../components/Reusable/Containers';
+import {TextElement} from '../components/Reusable/TextElement';
+import {useColors} from '../services/customHook/useColors';
 
 function Screen1() {
   return (
@@ -52,11 +54,10 @@ const isRtl = I18nManager.getConstants().isRTL;
 
 function MyCustomTopTabBar({navigation, route}) {
   const autoNavigateSection = route.params?.section;
-  console.log(route.params, 'hi');
+  const {fillPrimary, success, fillSecondary, primaryText} = useColors();
   useFocusEffect(
     React.useCallback(() => {
       if (autoNavigateSection) {
-        console.log('work');
         navigation.jumpTo(autoNavigateSection);
       }
     }, [autoNavigateSection]),
@@ -69,10 +70,10 @@ function MyCustomTopTabBar({navigation, route}) {
         tabBarScrollEnabled: true,
         tabBarLabelStyle: {
           fontSize: 11,
-          color: EStyleSheet.value('$fillPrimary'),
+          color: fillPrimary,
         },
         tabBarStyle: {
-          backgroundColor: EStyleSheet.value('$fillPrimary'),
+          backgroundColor: fillPrimary,
         },
         tabBarContentContainerStyle: {
           //   flexDirection:
@@ -80,7 +81,7 @@ function MyCustomTopTabBar({navigation, route}) {
         },
         tabBarItemStyle: {width: TAB_WIDTH, padding: 0},
         tabBarIndicatorStyle: {
-          backgroundColor: EStyleSheet.value('$success'),
+          backgroundColor: success,
           //   flexDirection:
           //     isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row',
           //   left: TAB_WIDTH * NUMBER_OF_TABS - BAR_WIDTH,
@@ -89,7 +90,7 @@ function MyCustomTopTabBar({navigation, route}) {
           //   flexDirection:
           //     isRtl && Platform.OS === 'android' ? 'row-reverse' : 'row',
           left: TAB_WIDTH * NUMBER_OF_TABS - BAR_WIDTH,
-          backgroundColor: EStyleSheet.value('$fillSecondary'),
+          backgroundColor: fillSecondary,
         },
         tabBarBounces: false,
         lazy: true,
@@ -98,7 +99,7 @@ function MyCustomTopTabBar({navigation, route}) {
           <View
             style={{
               flex: 1,
-              backgroundColor: EStyleSheet.value('$primaryText'),
+              backgroundColor: primaryText,
             }}
           />
         ),

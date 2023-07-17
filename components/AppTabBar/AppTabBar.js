@@ -17,6 +17,7 @@ import {
 import {useTabs} from '../../fixtures/navigationTabs';
 import {useTranslation} from 'react-i18next';
 import {initPalette} from '../../services/initApp/initApp';
+import {useColors} from '../../services/customHook/useColors';
 
 const AppTabBar = () => {
   initPalette();
@@ -34,6 +35,8 @@ const AppTabBar = () => {
     }, [language, bottomBackgroundColor]),
   );
 
+  const {fillPrimary, fillSecondary} = useColors();
+
   const tabs = useTabs();
 
   return (
@@ -45,8 +48,8 @@ const AppTabBar = () => {
             {
               backgroundColor:
                 bottomBackgroundColor || isDarkMode
-                  ? EStyleSheet.value('$fillPrimary')
-                  : EStyleSheet.value('$fillSecondary'),
+                  ? fillPrimary
+                  : fillSecondary,
               borderColor: '#dcdcdc',
               flexDirection: 'row',
               // alignItems: 'center',

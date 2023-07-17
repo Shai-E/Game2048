@@ -5,12 +5,11 @@ import Lottie from 'lottie-react-native';
 
 // Style
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {ScreenContainer} from '../../components/Reusable/reusable';
+import {ScreenContainer} from '../../components/Reusable/Containers';
 
 const WebViewPage = ({route}) => {
   const uri = route.params?.uri;
   const [isLoading, setIsLoading] = useState(true);
-  //   const white = EStyleSheet.value('$primaryText');
   const path =
     (uri.includes('pdf')
       ? 'https://drive.google.com/viewerng/viewer?embedded=true&url='

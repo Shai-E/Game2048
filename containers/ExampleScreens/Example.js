@@ -1,6 +1,9 @@
-import {ScreenContainer, TextElement} from '../../components/Reusable/reusable';
+import {ScreenContainer} from '../../components/Reusable/Containers';
+import {initPalette} from '../../services/initApp/initApp';
+import {TextElement} from '../../components/Reusable/TextElement';
 
 const GenericExampleScreen = ({title}) => {
+  initPalette();
   // console.log('title', title);
   return (
     <ScreenContainer>

@@ -13,7 +13,7 @@ import Animated, {
   useAnimatedStyle,
   useAnimatedGestureHandler,
 } from 'react-native-reanimated';
-import {TextElement} from '../components/Reusable/reusable';
+import {TextElement} from '../components/Reusable/TextElement';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {initPalette} from '../services/initApp/initApp';
 import {useFocusEffect} from '@react-navigation/native';
