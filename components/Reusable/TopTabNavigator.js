@@ -19,11 +19,11 @@ import {setTopBG} from '../../store/reducers/appSlice';
 import {initPalette} from '../../services/initApp/initApp';
 import {useColors} from '../../services/customHook/useColors';
 
-const DEFAULT_TAB_WIDTH = wp('22%');
+const DEFAULT_TAB_WIDTH = wp('33.33%');
 const DEFAULT_BAR_HEIGHT = hp('6%');
 const DEFAULT_BAR_WIDTH = wp('100%');
 const isRtl = I18nManager.getConstants().isRTL;
-const DEFAULT_STYLE = 'round';
+const DEFAULT_STYLE = 'basic'; // basic || round
 
 const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
   const {fillPrimary, fillSecondary, background} = useColors();
@@ -64,11 +64,13 @@ const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
       onPress={() => {
         setCurrentTab(tabIndex);
       }}>
-      <View
-        style={{
-          ...defaultThemes[DEFAULT_STYLE].innerViewStyle,
-        }}>
-        <TextElement>{name}</TextElement>
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        <View
+          style={{
+            ...defaultThemes[DEFAULT_STYLE].innerViewStyle,
+          }}>
+          <TextElement>{name}</TextElement>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -147,7 +149,7 @@ const TopTabScreens = ({
 };
 
 const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
-  const {fillSecondary, warning} = useColors();
+  const {fillSecondary, warning, background} = useColors();
 
   const tabsRef = useRef();
   const OFFSET =
@@ -182,11 +184,11 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
       style={{
         height: DEFAULT_BAR_HEIGHT,
         minWidth: DEFAULT_BAR_WIDTH,
-        backgroundColor: fillSecondary,
+        backgroundColor: DEFAULT_STYLE === 'round' ? background : fillSecondary,
       }}
       contentContainerStyle={{
         justifyContent: 'center',
-        backgroundColor: warning, // background color on press.
+        backgroundColor: DEFAULT_STYLE === 'round' ? background : warning, // background color on press.
         // flexDirection:
         //   Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
         minWidth:
@@ -217,7 +219,6 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
   );
 };
 const TopTabNavigator = ({navigation, route, topTabs}) => {
-  const {fillSecondary, background} = useColors();
   const topTabKeysArray = Object.keys(topTabs);
   const correctedDefaultIndex =
     Platform.OS === 'android' && isRtl ? topTabKeysArray.length - 1 : 0;
