@@ -52,7 +52,7 @@ const HomeScreen = () => {
   };
   const handleThemeChange = async () => {
     const nextThemeToUse = isDarkMode ? 'light' : 'dark';
-    await dispatch(setIsDarkMode(nextThemeToUse === 'dark'));
+    await dispatch(setIsDarkMode(nextThemeToUse.includes('dark')));
     initPalette();
     dispatch(setTopBG(EStyleSheet.value('$background')));
     await saveToStorage('theme', nextThemeToUse);

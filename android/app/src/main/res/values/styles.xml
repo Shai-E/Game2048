@@ -9,6 +9,8 @@
     <color name="statusBarBGLight">#ffffff</color>
     <color name="statusBarBGDark">#090921</color>
     <color name="colorPrimaryLight">#5DADE2</color>
+    <color name="colorDrawerLight">#FFFFFF</color>
+    <color name="colorDrawerDark">#0b132b</color>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
@@ -25,6 +27,17 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:colorPrimary">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+    </style>
+        <style name="AppTheme_LightDrawer" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:colorPrimary">@color/colorPrimaryLight</item>
+        <item name="android:navigationBarColor">@color/colorDrawerLight</item>
+    </style>
+
+    <style name="AppTheme_DarkDrawer" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:colorPrimary">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/colorDrawerDark</item>
     </style>
 
 </resources>

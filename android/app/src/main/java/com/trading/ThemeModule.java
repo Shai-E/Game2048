@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent; // Required for theme change
 import android.content.SharedPreferences; // Required for theme change
 import android.preference.PreferenceManager; // Required for theme change
+
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
@@ -28,11 +30,16 @@ public class ThemeModule extends ReactContextBaseJavaModule {
     return "ThemeModule";
   }
 
+   public String getTheme() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
+        String theme = preferences.getString(ThemeModule.THEME_PREFERENCE_KEY, "dark");
+        return theme;
+    }
+
   @ReactMethod
-  public String getTheme() {
-      SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
-      String theme = preferences.getString(ThemeModule.THEME_PREFERENCE_KEY, "dark");
-      return theme;
+  public void getThemeAsync(Callback callback) {
+      String theme = getTheme();
+      callback.invoke(theme);
   }
 
   @ReactMethod

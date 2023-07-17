@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {DrawerActions, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {I18nextProvider} from 'react-i18next';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -21,11 +21,12 @@ import {navigationRef} from './services/utils/navigationHelpers/rootNavigation';
 Orientation.lockToPortrait();
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {I18nManager} from 'react-native';
+import {I18nManager, NativeModules} from 'react-native';
 import {MenuDrawerScreen} from './containers/MenuDrawerScreen/MenuDrawerScreen';
 
 const MainNavigator = createNativeStackNavigator();
 const UserNavigator = createNativeStackNavigator();
+const {ThemeModule} = NativeModules;
 
 // stack navigation
 const UserStack = () => {
@@ -46,6 +47,16 @@ const RightDrawer = () => {
     unmountOnBlur: true,
     swipeEdgeWidth: 0,
   };
+
+  // useEffect(() => {
+  //   if (Platform.OS === 'android') {
+  //     ThemeModule.getThemeAsync(theme => {
+  //       if (theme.includes('drawer')) {
+  //         navigationRef.dispatch(DrawerActions.openDrawer());
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   return (
     <DrawerNavigator.Navigator

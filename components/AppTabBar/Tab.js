@@ -1,5 +1,5 @@
-import React, {useCallback} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {View, TouchableOpacity, NativeModules, Platform} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 // Style
@@ -19,14 +19,17 @@ import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentRoute} from '../../store/reducers/appSlice';
 import {useColors} from '../../services/customHook/useColors';
+const {ThemeModule} = NativeModules;
 
 const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   const navigation = useNavigation();
   const currRoute = useRoute();
   const currentRoute = useSelector(state => state.appSlice.currentRoute);
+  // const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
   const screen = currRoute.params?.screen || currentRoute;
   const {primaryText, warning} = useColors();
   const {t} = useTranslation();
+  // const [hasChanged, setHasChanged] = useState();
 
   const navigationTabs = [
     <HomeIcon style={{color: screen === route ? warning : primaryText}} />,
@@ -41,6 +44,17 @@ const Tab = ({tab, route, section, icon, accessibilityLabel}) => {
   const routeNavigation = useCallback(() => {
     if (screen === route) return;
     if (route === 'Menu') {
+      // if (Platform.OS === 'android') {
+      //   ThemeModule.getThemeAsync(theme => {
+      //     console.log(theme);
+      //     if (!theme.includes('drawer')) {
+      //       ThemeModule.changeTheme(
+      //         isDarkMode ? 'dark-drawer' : 'light-drawer',
+      //       );
+      //     }
+      //   });
+      // }
+
       return navigation.openDrawer();
     }
     dispatch(setCurrentRoute(route));
