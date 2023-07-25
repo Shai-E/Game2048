@@ -5,7 +5,11 @@ import {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBottomBG, setTopBG} from '../../store/reducers/appSlice';
 import {useColors} from '../../services/customHook/useColors';
-import {NativeModules, Platform} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/native';
+// import {NativeModules, Platform} from 'react-native';
 
 export const MenuDrawerScreen = () => {
   const status = useDrawerStatus();
@@ -14,8 +18,8 @@ export const MenuDrawerScreen = () => {
   const topBackgroundColor = useSelector(
     state => state.appSlice.topBackgroundColor,
   );
-  const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
-  const {ThemeModule} = NativeModules;
+  // const isDarkMode = useSelector(state => state.appSlice.isDarkMode);
+  // const {ThemeModule} = NativeModules;
   const bottomBackgroundColor = useSelector(
     state => state.appSlice.bottomBackgroundColor,
   );
@@ -39,9 +43,31 @@ export const MenuDrawerScreen = () => {
       //   ThemeModule.changeTheme(isDarkMode ? 'dark' : 'light');
     };
   }, [status, prevColors.current]);
+  const navigation = useNavigation();
   return (
     <ScreenContainer>
+      <TouchableOpacity
+        style={styles.menuSection}
+        onPress={() => {
+          navigation.navigate('user', {screen: 'game-2048'});
+        }}>
+        <TextElement>2048</TextElement>
+      </TouchableOpacity>
       <TextElement>drawer</TextElement>
     </ScreenContainer>
   );
 };
+
+const styles = EStyleSheet.create({
+  menuSection: {
+    width: wp('85%'),
+    borderRadius: 100,
+    borderColor: 'white',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderWidth: 1.4,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    marginVertical: 3,
+  },
+});

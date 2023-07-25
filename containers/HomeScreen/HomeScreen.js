@@ -58,6 +58,7 @@ const HomeScreen = () => {
     await saveToStorage('theme', nextThemeToUse);
     Platform.OS === 'android' && ThemeModule.changeTheme(nextThemeToUse);
   };
+
   return (
     <ScreenContainer>
       <TextElement>{t('screens.home')}</TextElement>

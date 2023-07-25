@@ -17,6 +17,8 @@ import {TextElement} from '../components/Reusable/TextElement';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {initPalette} from '../services/initApp/initApp';
 import {useFocusEffect} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 
 const colors = {
   2: '#EEE4DA',
@@ -36,14 +38,16 @@ const colors = {
   32768: 'red',
 };
 
-const WINNING_SCORE = +Object.keys(colors)[10]; //2048
+const WINNING_SCORE = +Object.keys(colors)[2]; //2048
 
 const GameBoard = () => {
   const [board, setBoard] = useState([]);
   const [score, setScore] = useState(0);
   const [isWin, setIsWin] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [history, setHistory] = useState([]);
   const historyRef = useRef([]);
+  const {t} = useTranslation();
 
   useFocusEffect(
     useCallback(() => {
@@ -61,8 +65,9 @@ const GameBoard = () => {
     setBoard(initialBoard);
     setScore(0);
     setIsWin(false);
-    setHistory([initialBoard]);
-    historyRef.current = [initialBoard];
+    const boardInstance = {board: initialBoard, score: 0};
+    setHistory([boardInstance]);
+    historyRef.current = [boardInstance];
   };
 
   const addRandomTile = board => {
@@ -85,37 +90,50 @@ const GameBoard = () => {
   const isRtl = I18nManager.getConstants().isRTL;
 
   const handleSwipe = direction => {
+    if (!isPlaying) return;
     let newBoard = [...board];
-
+    let addedValue = 0;
     switch (direction) {
-      case 'down':
+      case 'down': {
         newBoard = transposeBoard(newBoard);
         newBoard = moveTiles(newBoard);
-        newBoard = mergeTiles(newBoard);
+        const [a, b] = mergeTiles(newBoard);
+        newBoard = a;
+        addedValue = b;
         newBoard = moveTiles(newBoard);
         newBoard = transposeBoard(newBoard);
         break;
-      case 'up':
+      }
+      case 'up': {
         newBoard = transposeBoard(newBoard);
         newBoard = reverseRows(newBoard);
         newBoard = moveTiles(newBoard);
-        newBoard = mergeTiles(newBoard);
+        const [a, b] = mergeTiles(newBoard);
+        newBoard = a;
+        addedValue = b;
         newBoard = moveTiles(newBoard);
         newBoard = reverseRows(newBoard);
         newBoard = transposeBoard(newBoard);
         break;
-      case isRtl ? 'left' : 'right':
+      }
+      case isRtl ? 'left' : 'right': {
         newBoard = moveTiles(newBoard);
-        newBoard = mergeTiles(newBoard);
+        const [a, b] = mergeTiles(newBoard);
+        newBoard = a;
+        addedValue = b;
         newBoard = moveTiles(newBoard);
         break;
-      case isRtl ? 'right' : 'left':
+      }
+      case isRtl ? 'right' : 'left': {
         newBoard = reverseRows(newBoard);
         newBoard = moveTiles(newBoard);
-        newBoard = mergeTiles(newBoard);
+        const [a, b] = mergeTiles(newBoard);
+        newBoard = a;
+        addedValue = b;
         newBoard = moveTiles(newBoard);
         newBoard = reverseRows(newBoard);
         break;
+      }
       default:
         break;
     }
@@ -123,7 +141,10 @@ const GameBoard = () => {
       addRandomTile(newBoard);
       setBoard(newBoard);
 
-      const nextHistory = [...history, newBoard];
+      const nextHistory = [
+        ...history,
+        {board: newBoard, score: score + addedValue},
+      ];
       historyRef.current = nextHistory;
       setHistory(prevHistory => {
         return nextHistory;
@@ -150,7 +171,14 @@ const GameBoard = () => {
   const ScoreView = () => {
     return (
       <View style={styles.scoreView}>
-        <TextElement customStyle={styles.scoreText}>Score: {score}</TextElement>
+        <View>
+          <TextElement customStyle={styles.scoreText}>
+            {t('score')}: {score}
+          </TextElement>
+          <TextElement customStyle={styles.movesText} changeFontByRem={-0.2}>
+            {t('moves')}: {history?.length - 1}
+          </TextElement>
+        </View>
         {isWin && (
           <TextElement customStyle={styles.winText}>You Win!</TextElement>
         )}
@@ -164,16 +192,35 @@ const GameBoard = () => {
     };
 
     return (
-      <TouchableOpacity style={styles.gameButton} onPress={handleRestart}>
+      <TouchableOpacity
+        style={[styles.gameButton, {minWidth: widthPercentageToDP('33.33%')}]}
+        onPress={handleRestart}>
         <Text style={styles.gameButtonText}>Restart</Text>
       </TouchableOpacity>
     );
   };
+  const StartButton = () => {
+    const handleRestart = () => {
+      setIsPlaying(true);
+      initializeBoard();
+    };
 
-  const UndoButton = () => {
+    return (
+      <TouchableOpacity
+        style={[styles.gameButton, {minWidth: widthPercentageToDP('33.33%')}]}
+        onPress={handleRestart}>
+        <Text style={styles.gameButtonText}>Start</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const UndoButton = ({disabled}) => {
     const handleUndo = () => {
+      if (!isPlaying) return;
       if (history.length > 1) {
-        const prevBoard = history[history.length - 2];
+        const prevBoard = history[history.length - 2].board;
+        const prevScore = history[history.length - 2].score;
+        setScore(prevScore);
         setBoard(prevBoard);
         setHistory(prevHistory => prevHistory.slice(0, -1));
         setIsWin(checkWinCondition(prevBoard));
@@ -181,17 +228,22 @@ const GameBoard = () => {
     };
 
     return (
-      <TouchableOpacity style={styles.gameButton} onPress={handleUndo}>
+      <TouchableOpacity
+        style={[styles.gameButton, {opacity: disabled ? 0.3 : 1}]}
+        onPress={disabled ? null : handleUndo}>
         <Text style={styles.gameButtonText}>Undo</Text>
       </TouchableOpacity>
     );
   };
 
-  const RedoButton = () => {
+  const RedoButton = ({disabled}) => {
     const handleRedo = () => {
+      if (!isPlaying) return;
       if (history.length > 0 && historyRef.current.length > history.length) {
-        const nextBoard = historyRef.current[history.length];
+        const nextBoard = historyRef.current[history.length].board;
+        const nextScore = historyRef.current[history.length].score;
         setBoard(nextBoard);
+        setScore(nextScore);
         setHistory(prevHistory => {
           return [...historyRef.current].slice(
             0,
@@ -206,7 +258,9 @@ const GameBoard = () => {
     };
 
     return (
-      <TouchableOpacity style={styles.gameButton} onPress={handleRedo}>
+      <TouchableOpacity
+        style={[styles.gameButton, {opacity: disabled ? 0.3 : 1}]}
+        onPress={disabled ? null : handleRedo}>
         <Text style={styles.gameButtonText}>Redo</Text>
       </TouchableOpacity>
     );
@@ -249,7 +303,7 @@ const GameBoard = () => {
       }
     }
     increaseScore(addedScore);
-    return newBoard;
+    return [newBoard, addedScore];
   };
 
   const isEqual = (board1, board2) => {
@@ -265,34 +319,28 @@ const GameBoard = () => {
 
   const renderBoard = () => {
     return (
-      <>
-        <View style={styles.board}>
-          {
-            /* Existing board rendering code */
-            board.map((row, rowIndex) => (
-              <View key={rowIndex} style={styles.row}>
-                {row.map((cell, columnIndex) => {
-                  const cellValue = cell !== 0 ? cell.toString() : '';
-                  const backgroundColor = colors[cellValue] || colors.undefined;
+      <View style={styles.board}>
+        {isPlaying ? (
+          board.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.row}>
+              {row.map((cell, columnIndex) => {
+                const cellValue = cell !== 0 ? cell.toString() : '';
+                const backgroundColor = colors[cellValue] || colors.undefined;
 
-                  return (
-                    <Tile
-                      key={columnIndex}
-                      value={cellValue}
-                      backgroundColor={backgroundColor}
-                    />
-                  );
-                })}
-              </View>
-            ))
-          }
-        </View>
-        <View style={{flexDirection: 'row', gap: 10, justifyContent: 'center'}}>
-          <UndoButton />
-          <RedoButton />
-          <RestartButton />
-        </View>
-      </>
+                return (
+                  <Tile
+                    key={columnIndex}
+                    value={cellValue}
+                    backgroundColor={backgroundColor}
+                  />
+                );
+              })}
+            </View>
+          ))
+        ) : (
+          <TextElement changeFontByRem={2}>2048</TextElement>
+        )}
+      </View>
     );
   };
 
@@ -350,13 +398,17 @@ const GameBoard = () => {
       borderWidth: 5,
       borderColor: '#BBADA0',
       backgroundColor: '$fillSecondary',
+      width: widthPercentageToDP('80%') + 50,
+      height: widthPercentageToDP('80%') + 50,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     row: {
       flexDirection: 'row',
     },
     cell: {
-      width: 80,
-      height: 80,
+      width: widthPercentageToDP('20%'),
+      height: widthPercentageToDP('20%'),
       margin: 5,
       borderRadius: 5,
       alignItems: 'center',
@@ -406,6 +458,7 @@ const GameBoard = () => {
       padding: 10,
       backgroundColor: '$fillPrimary',
       borderRadius: 5,
+      alignItems: 'center',
     },
     gameButtonText: {
       fontSize: 16,
@@ -420,28 +473,17 @@ const GameBoard = () => {
         <ScoreView />
 
         <View style={{}}>{renderBoard()}</View>
-        {/* <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleSwipe('up')}>
-            <Text style={styles.buttonText}>Up</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleSwipe('left')}>
-            <Text style={styles.buttonText}>Left</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleSwipe('down')}>
-            <Text style={styles.buttonText}>Down</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleSwipe('right')}>
-            <Text style={styles.buttonText}>Right</Text>
-          </TouchableOpacity>
-        </View> */}
+
+        <View
+          style={{flexDirection: 'row', gap: 10, justifyContent: 'center'}}
+          isPlaying={isPlaying}>
+          <RedoButton
+            disabled={history.length >= historyRef.current.length}
+            isPlaying={isPlaying}
+          />
+          {isPlaying ? <RestartButton /> : <StartButton />}
+          <UndoButton disabled={history.length <= 1} isPlaying={isPlaying} />
+        </View>
       </View>
     </PanGestureHandler>
   );

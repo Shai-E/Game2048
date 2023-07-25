@@ -25,7 +25,7 @@ const DEFAULT_BAR_WIDTH = wp('100%');
 const isRtl = I18nManager.getConstants().isRTL;
 const DEFAULT_STYLE = 'basic'; // basic || round
 
-const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
+const TopTab = ({name, active, setCurrentTab, tabIndex, tabBarStyle}) => {
   const {fillPrimary, fillSecondary, background} = useColors();
   const defaultThemes = {
     round: {
@@ -58,7 +58,7 @@ const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
         alignItems: 'center',
         justifyContent: 'center',
         width: DEFAULT_TAB_WIDTH,
-        ...defaultThemes[DEFAULT_STYLE].touchableStyle,
+        ...defaultThemes[tabBarStyle].touchableStyle,
       }}
       activeOpacity={0.6}
       onPress={() => {
@@ -67,7 +67,7 @@ const TopTab = ({name, active, setCurrentTab, tabIndex}) => {
       <View style={{flex: 1, justifyContent: 'center'}}>
         <View
           style={{
-            ...defaultThemes[DEFAULT_STYLE].innerViewStyle,
+            ...defaultThemes[tabBarStyle].innerViewStyle,
           }}>
           <TextElement>{name}</TextElement>
         </View>
@@ -133,7 +133,7 @@ const TopTabScreens = ({
           canmomentum.current = false;
         }}>
         {topTabKeysArray.map((tabName, index) => {
-          const Screen = topTabs[tabName];
+          const Screen = topTabs[index].Component;
           return (
             <View
               key={tabName}
@@ -148,7 +148,13 @@ const TopTabScreens = ({
   );
 };
 
-const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
+const TopTabBar = ({
+  currentTab,
+  setCurrentTab,
+  topTabKeysArray,
+  initRoute,
+  tabBarStyle,
+}) => {
   const {fillSecondary, warning, background} = useColors();
 
   const tabsRef = useRef();
@@ -184,11 +190,11 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
       style={{
         height: DEFAULT_BAR_HEIGHT,
         minWidth: DEFAULT_BAR_WIDTH,
-        backgroundColor: DEFAULT_STYLE === 'round' ? background : fillSecondary,
+        backgroundColor: tabBarStyle === 'round' ? background : fillSecondary,
       }}
       contentContainerStyle={{
         justifyContent: 'center',
-        backgroundColor: DEFAULT_STYLE === 'round' ? background : warning, // background color on press.
+        backgroundColor: tabBarStyle === 'round' ? background : warning, // background color on press.
         // flexDirection:
         //   Platform.OS === 'android' && isRtl ? 'row-reverse' : 'row',
         minWidth:
@@ -212,16 +218,21 @@ const TopTabBar = ({currentTab, setCurrentTab, topTabKeysArray, initRoute}) => {
             setCurrentTab={setCurrentTab}
             active={currentTab === correctedIndex}
             tabIndex={correctedIndex}
+            tabBarStyle={tabBarStyle}
           />
         );
       })}
     </ScrollView>
   );
 };
-const TopTabNavigator = ({navigation, route, topTabs}) => {
-  const topTabKeysArray = Object.keys(topTabs);
+const TopTabNavigator = ({navigation, route, topTabs, style, initialTab}) => {
+  const topTabKeysArray = topTabs.reduce((acc, item) => {
+    return [...acc, item.tabName];
+  }, []);
   const correctedDefaultIndex =
-    Platform.OS === 'android' && isRtl ? topTabKeysArray.length - 1 : 0;
+    Platform.OS === 'android' && isRtl
+      ? topTabKeysArray.length - 1 - initialTab || topTabKeysArray.length - 1
+      : initialTab || 0;
   const routeNameToIndex = topTabKeysArray.findIndex(tabName => {
     return tabName === route.params?.tab;
   });
@@ -234,11 +245,13 @@ const TopTabNavigator = ({navigation, route, topTabs}) => {
       : initialRouteIndex,
   );
 
+  const tabBarStyle = style || DEFAULT_STYLE;
+
   const dispatch = useDispatch();
 
   useFocusEffect(
     useCallback(() => {
-      DEFAULT_STYLE === 'basic' &&
+      tabBarStyle === 'basic' &&
         dispatch(setTopBG(EStyleSheet.value('$fillSecondary')));
       return () => {
         dispatch(setTopBG(EStyleSheet.value('$background')));
@@ -254,6 +267,7 @@ const TopTabNavigator = ({navigation, route, topTabs}) => {
         setCurrentTab={setCurrentTab}
         topTabKeysArray={topTabKeysArray}
         initRoute={route.params?.tab}
+        tabBarStyle={tabBarStyle}
       />
       <TopTabScreens
         navigation={navigation}

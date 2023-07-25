@@ -5,20 +5,10 @@ import SettingsScreen from '../containers/SettingScreen/SettingsScreen';
 import {MyCustomTopTabBar} from './TopTabNavigation';
 // import MyCustomTopTabBar2 from './TopTabNavigation2';
 import AppTabBar from '../components/AppTabBar/AppTabBar';
-import GameBoard2048 from '../games/Game2048';
 
 const Tab = createBottomTabNavigator();
 
-const bottomTabs = {
-  Home: HomeScreen,
-  Settings: SettingsScreen,
-  Options: MyCustomTopTabBar,
-  Search: GameBoard2048,
-  // Test: MyCustomTopTabBar2,
-};
-
 export const BottomTabs = () => {
-  // const tabsToDisplay = createNavigationScreen(bottomTabs, Tab.Screen);
   return (
     <Tab.Navigator
       screenOptions={{headerShown: false}}
@@ -26,7 +16,7 @@ export const BottomTabs = () => {
       <Tab.Screen name={'Home'} component={HomeScreen} />
       <Tab.Screen name={'Settings'} component={SettingsScreen} />
       <Tab.Screen name={'Options'} component={MyCustomTopTabBar} />
-      <Tab.Screen name={'Search'} component={GameBoard2048} />
+      <Tab.Screen name={'Search'} component={SettingsScreen} />
       {/* <Tab.Screen name={'Test'} component={MyCustomTopTabBar2} /> */}
     </Tab.Navigator>
   );

@@ -16,23 +16,61 @@ initApp();
 import {BottomTabs} from './navigation/BottomTabNavigation';
 import Orientation from 'react-native-orientation';
 import WebViewPage from './containers/WebViewScreen/WebViewScreen';
-import {navigationRef} from './services/utils/navigationHelpers/rootNavigation';
+import {
+  navigationRef,
+  goBack,
+} from './services/utils/navigationHelpers/rootNavigation';
 
 Orientation.lockToPortrait();
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {I18nManager, NativeModules} from 'react-native';
+import {I18nManager, NativeModules, TouchableOpacity, View} from 'react-native';
 import {MenuDrawerScreen} from './containers/MenuDrawerScreen/MenuDrawerScreen';
+import {Game2048Navigation} from './navigation/Game2048Navigation';
+import {TextElement} from './components/Reusable/TextElement';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {ButtonElement} from './components/Reusable/ButtonElement';
+import {BackIcon} from './assets/icons/appIcons';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
+import {useColors} from './services/customHook/useColors';
 
 const MainNavigator = createNativeStackNavigator();
 const UserNavigator = createNativeStackNavigator();
 const {ThemeModule} = NativeModules;
 
+const UserStackHeadear = () => {
+  const {background} = useColors();
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: widthPercentageToDP('2.5%'),
+        paddingVertical: 20,
+        backgroundColor: background,
+      }}>
+      <TextElement>Go Back</TextElement>
+      <TouchableOpacity
+        onPress={() => {
+          goBack();
+        }}>
+        <BackIcon height={22} width={22} />
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 // stack navigation
 const UserStack = () => {
   return (
-    <UserNavigator.Navigator screenOptions={{headerShown: false}}>
+    <UserNavigator.Navigator
+      screenOptions={{
+        header: () => <UserStackHeadear />,
+        headerBackVisible: true,
+        headerShown: true,
+      }}>
       <UserNavigator.Screen name={'webview'} component={WebViewPage} />
+      <UserNavigator.Screen name={'game-2048'} component={Game2048Navigation} />
     </UserNavigator.Navigator>
   );
 };
