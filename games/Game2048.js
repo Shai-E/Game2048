@@ -28,9 +28,22 @@ const displayOnlyBoard = [
   [512, 1024, 2048, 4096],
   [8192, 16384, 32768, 0],
 ];
-const directions = ['right', 'left', 'up', 'down'];
+// const directions = ['right', 'left', 'up', 'down'];
 
 const MAX_AUTO_STEPS = 1200;
+
+const detectTakenIndexes = board => {
+  const takenIndexes = board.reduce((acc, row) => {
+    const cellValues = row
+      .filter(cell => cell.value !== 0)
+      .map(cell => {
+        return cell.index;
+      });
+    return [...acc, ...cellValues];
+  }, []);
+  return takenIndexes;
+};
+
 const GameBoard = () => {
   const [theme, setTheme] = useState('colorful');
   const colors = themes[theme];
@@ -55,26 +68,35 @@ const GameBoard = () => {
     }, []),
   );
   //this will play random first steps if autogame is set to 0
-  useEffect(() => {
-    if (autogame === false) return;
-    if (autogame === 0) {
-      const initialBoard = initializeBoard();
-      addRandomTile(initialBoard);
-      addRandomTile(initialBoard);
-      setBoard(initialBoard);
-      setIsPlaying(true);
-    }
-    if (autogame === MAX_AUTO_STEPS || isGameOver) return;
-    setTimeout(() => {
-      setAutogame(prev => prev + 1);
-      handleSwipe(directions[Math.floor(Math.random() * directions.length)]);
-    }, 50);
-  }, [autogame]);
+  // useEffect(() => {
+  //   if (autogame === false) return;
+  //   if (autogame === 0) {
+  //     const initialBoard = initializeBoard();
+  //     addRandomTile(initialBoard);
+  //     addRandomTile(initialBoard);
+  //     setBoard(initialBoard);
+  //     setIsPlaying(true);
+  //   }
+  //   if (autogame === MAX_AUTO_STEPS || isGameOver) return;
+  //   setTimeout(() => {
+  //     setAutogame(prev => prev + 1);
+  //     handleSwipe(directions[Math.floor(Math.random() * directions.length)]);
+  //   }, 50);
+  // }, [autogame]);
 
   const initializeBoard = () => {
     const initialBoard = Array(4)
-      .fill(0)
-      .map(() => Array(4).fill(0));
+      .fill([])
+      .map((row, rowIndex) =>
+        Array(4)
+          .fill(0)
+          .map((cell, cellIndex) => {
+            return {
+              value: 0,
+              index: null,
+            };
+          }),
+      );
     addRandomTile(initialBoard);
     addRandomTile(initialBoard);
     setBoard(initialBoard);
@@ -91,7 +113,7 @@ const GameBoard = () => {
     const emptyTiles = [];
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (board[i][j] === 0) {
+        if (board[i][j].value === 0) {
           emptyTiles.push({x: i, y: j});
         }
       }
@@ -104,14 +126,24 @@ const GameBoard = () => {
     }
   };
 
+  const counter = useRef(0);
+
   const addRandomTile = board => {
     const emptyTiles = checkForEmptyTiles(board);
 
     if (emptyTiles !== false) {
       const randomIndex = Math.floor(Math.random() * emptyTiles.length);
       const tile = emptyTiles[randomIndex];
-      board[tile.x][tile.y] = Math.random() < 0.9 ? 2 : 4;
+      board[tile.x].find((row, index) => index === tile.y).value =
+        Math.random() < 0.9 ? 2 : 4;
+      while (detectTakenIndexes(board).includes(counter.current + 1)) {
+        counter.current++;
+      }
+      board[tile.x].find((row, index) => index === tile.y).index =
+        counter.current + 1;
+      counter.current = counter.current < 15 ? counter.current + 1 : 0;
     }
+    setBoard(board);
   };
 
   const isRtl = I18nManager.getConstants().isRTL;
@@ -169,7 +201,7 @@ const GameBoard = () => {
       setBoard(newBoard);
       const didLose = checkLose(newBoard);
       const nextHistory = [
-        ...history,
+        ...historyRef.current,
         {board: newBoard, score: score + addedValue, didLose},
       ];
       historyRef.current = nextHistory;
@@ -186,7 +218,7 @@ const GameBoard = () => {
   const checkWinCondition = board => {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (board[i][j] === WINNING_SCORE) {
+        if (board[i][j].value === WINNING_SCORE) {
           return true;
         }
       }
@@ -203,12 +235,12 @@ const GameBoard = () => {
     } else {
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
-          const cellValue = board[i][j];
+          const cellValue = board[i][j].value;
           if (
-            (i > 0 && board[i - 1][j] === cellValue) ||
-            (i < 3 && board[i + 1][j] === cellValue) ||
-            (j > 0 && board[i][j - 1] === cellValue) ||
-            (j < 3 && board[i][j + 1] === cellValue)
+            (i > 0 && board[i - 1][j].value === cellValue) ||
+            (i < 3 && board[i + 1][j].value === cellValue) ||
+            (j > 0 && board[i][j - 1].value === cellValue) ||
+            (j < 3 && board[i][j + 1].value === cellValue)
           ) {
             lose = false;
             break;
@@ -218,7 +250,6 @@ const GameBoard = () => {
       }
       if (lose) {
         setIsGameOver(true);
-        // setIsGameOver(true);
         setAutogame(MAX_AUTO_STEPS);
       }
     }
@@ -342,22 +373,31 @@ const GameBoard = () => {
   };
 
   const moveRow = row => {
-    let newRow = row.filter(val => val !== 0);
+    let newRow = row.filter(val => val.value !== 0);
     const zerosCount = 4 - newRow.length;
-    newRow = Array(zerosCount).fill(0).concat(newRow);
+    newRow = Array(zerosCount)
+      .fill(0)
+      .map((cell, cellIndex) => {
+        return {
+          value: 0,
+          index: null,
+        };
+      })
+      .concat(newRow);
     return newRow;
   };
 
   const mergeTiles = board => {
-    const newBoard = [...board];
+    const newBoard = JSON.parse(JSON.stringify(board));
     let addedScore = 0;
     for (let i = 0; i < 4; i++) {
       for (let j = 3; j > 0; j--) {
-        if (newBoard[i][j] === newBoard[i][j - 1]) {
-          newBoard[i][j] *= 2;
-          addedScore += newBoard[i][j];
-          newBoard[i][j] === WINNING_SCORE && setIsWin(true);
-          newBoard[i][j - 1] = 0;
+        if (newBoard[i][j].value === newBoard[i][j - 1].value) {
+          newBoard[i][j].value *= 2;
+          addedScore += newBoard[i][j].value;
+          newBoard[i][j].value === WINNING_SCORE && setIsWin(true);
+          newBoard[i][j - 1].value = 0;
+          newBoard[i][j - 1].index = null;
         }
       }
     }
@@ -368,7 +408,7 @@ const GameBoard = () => {
   const isEqual = (board1, board2) => {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        if (board1[i][j] !== board2[i][j]) {
+        if (board1[i][j].value !== board2[i][j].value) {
           return false;
         }
       }
@@ -386,7 +426,10 @@ const GameBoard = () => {
             {board.map((row, rowIndex) => (
               <View key={rowIndex} style={styles.row}>
                 {row.map((cell, columnIndex) => {
-                  const cellValue = cell !== 0 ? cell.toString() : '';
+                  const cellValue =
+                    cell.value !== 0 ? cell.value.toString() : '';
+                  const cellIndex =
+                    cell.index !== null ? cell.index?.toString() : '';
                   const backgroundColor =
                     colors[cellValue]?.background || colors.undefined;
                   const textColor = colors[cellValue]?.text || colors.undefined;
@@ -397,6 +440,7 @@ const GameBoard = () => {
                       value={cellValue}
                       backgroundColor={backgroundColor}
                       textColor={textColor}
+                      cellIndex={cellIndex}
                     />
                   );
                 })}
@@ -508,7 +552,13 @@ const GameBoard = () => {
     );
   };
 
-  const Tile = ({value, backgroundColor, textColor, displayOnlyBoard}) => {
+  const Tile = ({
+    value,
+    backgroundColor,
+    textColor,
+    displayOnlyBoard,
+    cellIndex,
+  }) => {
     return (
       <View style={[styles.cell, {backgroundColor}]}>
         <TextElement
@@ -519,6 +569,14 @@ const GameBoard = () => {
           }}>
           {displayOnlyBoard ? (focusOnTheme ? '' : value) : value}
         </TextElement>
+        {/* <TextElement
+          changeFontByRem={-0.1}
+          customStyle={{
+            ...styles.cellText,
+            color: textColor ? textColor : '#776E65',
+          }}>
+          {displayOnlyBoard ? '' : cellIndex}
+        </TextElement> */}
       </View>
     );
   };
