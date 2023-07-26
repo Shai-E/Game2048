@@ -1,17 +1,20 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import {
-  StyleSheet,
   View,
   Text,
   TouchableOpacity,
   I18nManager,
+  Pressable,
 } from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
-  withTiming,
   useAnimatedStyle,
-  useAnimatedGestureHandler,
+  ZoomIn,
+  FadeInDown,
+  FadeInUp,
+  FadeInRight,
+  FadeInLeft,
 } from 'react-native-reanimated';
 import {TextElement} from '../components/Reusable/TextElement';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -29,6 +32,7 @@ const displayOnlyBoard = [
   [8192, 16384, 32768, 0],
 ];
 // const directions = ['right', 'left', 'up', 'down'];
+// tryyyyyy
 
 const MAX_AUTO_STEPS = 1200;
 
@@ -45,7 +49,8 @@ const detectTakenIndexes = board => {
 };
 
 const GameBoard = () => {
-  const [theme, setTheme] = useState('colorful');
+  const [theme, setTheme] = useState('classic');
+  const [displayThemes, setDisplayThemes] = useState(false);
   const colors = themes[theme];
 
   const WINNING_SCORE = +Object.keys(colors)[10]; //2048
@@ -103,7 +108,12 @@ const GameBoard = () => {
     setScore(0);
     setIsWin(false);
     setIsGameOver(false);
-    const boardInstance = {board: initialBoard, score: 0, didLose: false};
+    const boardInstance = {
+      board: initialBoard,
+      score: 0,
+      didLose: false,
+      direction: null,
+    };
     setHistory([boardInstance]);
     historyRef.current = [boardInstance];
     return initialBoard;
@@ -202,7 +212,7 @@ const GameBoard = () => {
       const didLose = checkLose(newBoard);
       const nextHistory = [
         ...historyRef.current,
-        {board: newBoard, score: score + addedValue, didLose},
+        {board: newBoard, score: score + addedValue, didLose, direction},
       ];
       historyRef.current = nextHistory;
       setHistory(prevHistory => {
@@ -441,6 +451,7 @@ const GameBoard = () => {
                       backgroundColor={backgroundColor}
                       textColor={textColor}
                       cellIndex={cellIndex}
+                      coords={{rowIndex, columnIndex}}
                     />
                   );
                 })}
@@ -482,12 +493,14 @@ const GameBoard = () => {
                       backgroundColor={backgroundColor}
                       textColor={textColor}
                       displayOnlyBoard
+                      coords={{rowIndex, columnIndex}}
                     />
                   );
                 })}
               </View>
             ))}
-            <View
+            <Pressable
+              onPress={() => setDisplayThemes(prev => !prev)}
               style={{
                 position: 'absolute',
                 width: '100%',
@@ -500,57 +513,64 @@ const GameBoard = () => {
               <TextElement changeFontByRem={2} customStyle={{color: '#000000'}}>
                 2048
               </TextElement>
-              <TextElement
-                changeFontByRem={0.2}
-                customStyle={{
-                  color: focusOnTheme ? '#00000000' : '#000000',
-                  alignSelf: 'flex-start',
-                  paddingHorizontal: 10,
-                }}>
-                {t('theme')}
-              </TextElement>
-              <View
-                style={{
-                  flexWrap: 'wrap',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  // opacity: focusOnTheme ? 0.2 : 1,
-                }}>
-                {Object.entries(themes).map(([themeName, thisTheme], index) => (
-                  <ButtonElement
-                    key={themeName}
-                    onLongPress={() => setFocusOnTheme(prev => !prev)}
+              {displayThemes && (
+                <>
+                  <TextElement
+                    changeFontByRem={0.2}
                     customStyle={{
-                      width: undefined,
-                      height: 40,
-                      backgroundColor: focusOnTheme
-                        ? themeName === theme
-                          ? thisTheme[256].background
-                          : thisTheme[256].background + '80'
-                        : thisTheme[256].background,
-                      color: focusOnTheme
-                        ? themeName === theme
-                          ? thisTheme[256].text
-                          : 'transparent'
-                        : thisTheme[256].text,
-                      borderWidth: 1,
+                      color: focusOnTheme ? '#00000000' : '#000000',
+                      alignSelf: 'flex-start',
                       paddingHorizontal: 10,
-                      borderColor:
-                        themeName === theme
-                          ? thisTheme[512].background
-                          : thisTheme[256].background,
-                    }}
-                    title={themeName.toUpperCase()}
-                    onPress={() => setTheme(themeName)}
-                  />
-                ))}
-              </View>
-            </View>
+                    }}>
+                    {t('theme')}
+                  </TextElement>
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      // opacity: focusOnTheme ? 0.2 : 1,
+                    }}>
+                    {Object.entries(themes).map(
+                      ([themeName, thisTheme], index) => (
+                        <ButtonElement
+                          key={themeName}
+                          onLongPress={() => setFocusOnTheme(prev => !prev)}
+                          customStyle={{
+                            width: undefined,
+                            height: 40,
+                            backgroundColor: focusOnTheme
+                              ? themeName === theme
+                                ? thisTheme[256].background
+                                : thisTheme[256].background + '80'
+                              : thisTheme[256].background,
+                            color: focusOnTheme
+                              ? themeName === theme
+                                ? thisTheme[256].text
+                                : 'transparent'
+                              : thisTheme[256].text,
+                            borderWidth: 1,
+                            paddingHorizontal: 10,
+                            borderColor:
+                              themeName === theme
+                                ? thisTheme[512].background
+                                : thisTheme[256].background,
+                          }}
+                          title={themeName.toUpperCase()}
+                          onPress={() => setTheme(themeName)}
+                        />
+                      ),
+                    )}
+                  </View>
+                </>
+              )}
+            </Pressable>
           </>
         )}
       </View>
     );
   };
+  const tilePositions = useRef({}).current;
 
   const Tile = ({
     value,
@@ -558,9 +578,46 @@ const GameBoard = () => {
     textColor,
     displayOnlyBoard,
     cellIndex,
+    coords,
   }) => {
+    const fadeInAnimationsByDirection = {
+      up: FadeInDown,
+      down: FadeInUp,
+      left: FadeInRight,
+      right: FadeInLeft,
+    };
+
+    if (!tilePositions[coords.rowIndex + '-' + coords.columnIndex]) {
+      tilePositions[coords.rowIndex + '-' + coords.columnIndex] = {
+        x: useSharedValue(0),
+        y: useSharedValue(0),
+      };
+    }
+    const position = tilePositions[coords.rowIndex + '-' + coords.columnIndex];
+
+    const animatedStyle = useAnimatedStyle(() => ({
+      transform: [
+        {translateX: position.x.value},
+        {translateY: position.y.value},
+      ],
+    }));
+
     return (
-      <View style={[styles.cell, {backgroundColor}]}>
+      <Animated.View
+        entering={
+          cellIndex == counter.current
+            ? ZoomIn.delay(300)
+            : history[history.length - 1]?.board[coords.rowIndex][
+                coords.columnIndex
+              ]?.index !==
+                history[history.length - 2]?.board[coords.rowIndex][
+                  coords.columnIndex
+                ]?.index &&
+              fadeInAnimationsByDirection[
+                historyRef.current[historyRef.current.length - 1]?.direction
+              ]?.duration(200)
+        }
+        style={[styles.cell, {backgroundColor}, animatedStyle]}>
         <TextElement
           changeFontByRem={-0.1}
           customStyle={{
@@ -577,7 +634,7 @@ const GameBoard = () => {
           }}>
           {displayOnlyBoard ? '' : cellIndex}
         </TextElement> */}
-      </View>
+      </Animated.View>
     );
   };
 
@@ -701,7 +758,7 @@ const GameBoard = () => {
       <View style={styles.container}>
         <ScoreView />
 
-        <View style={{}}>{renderBoard()}</View>
+        <View style={{overflow: 'hidden'}}>{renderBoard()}</View>
 
         <View
           style={{flexDirection: 'row', gap: 10, justifyContent: 'center'}}
