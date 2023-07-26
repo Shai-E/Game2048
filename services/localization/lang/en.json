@@ -22,6 +22,7 @@
     "change.theme": "Change Theme",
     "score": "Score",
     "moves": "Moves",
-    "win": "You Win!"
+    "win": "You Win!",
+    "theme": "Theme"
   }
 }

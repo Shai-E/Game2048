@@ -10,6 +10,7 @@ import {TextElement} from './TextElement';
 export const ButtonElement = ({
   title,
   onPress,
+  onLongPress,
   outline,
   buttonColor,
   // TODO: setSpinner,
@@ -55,7 +56,10 @@ export const ButtonElement = ({
   });
   const accessibilityID = defineAccessibilityId(accessibilityLabel);
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.6}
+      onLongPress={onLongPress}>
       <View
         style={{
           ...presets.buttonContainerDefault,

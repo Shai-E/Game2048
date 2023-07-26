@@ -46,14 +46,30 @@ export const MenuDrawerScreen = () => {
   const navigation = useNavigation();
   return (
     <ScreenContainer>
-      <TouchableOpacity
-        style={styles.menuSection}
-        onPress={() => {
-          navigation.navigate('user', {screen: 'game-2048'});
-        }}>
-        <TextElement>2048</TextElement>
-      </TouchableOpacity>
-      <TextElement>drawer</TextElement>
+      <View style={styles.menuSection}>
+        {/* <TouchableOpacity
+          style={styles.menuSectionItem}
+          onPress={() => {
+            navigation.navigate('user', {screen: 'game-2048'});
+          }}>
+          <TextElement>2048</TextElement>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuSectionItem}
+          onPress={() => {
+            navigation.navigate('user', {screen: 'game-2048'});
+          }}>
+          <TextElement>2048</TextElement>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          style={[styles.menuSectionItem, {borderBottomWidth: 0}]}
+          onPress={() => {
+            navigation.navigate('user', {screen: 'game-2048'});
+          }}>
+          <TextElement>2048</TextElement>
+        </TouchableOpacity>
+      </View>
+      {/* <TextElement>drawer</TextElement> */}
     </ScreenContainer>
   );
 };
@@ -61,13 +77,22 @@ export const MenuDrawerScreen = () => {
 const styles = EStyleSheet.create({
   menuSection: {
     width: wp('85%'),
-    borderRadius: 100,
+    // flexDirection:''
+    borderRadius: 20,
     borderColor: 'white',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: 'center',
+    // borderWidth: 1,
+    // flexDirection: 'row',
     borderWidth: 1.4,
     paddingVertical: 10,
     paddingHorizontal: 5,
     marginVertical: 3,
+  },
+  menuSectionItem: {
+    borderBottomWidth: 1.4,
+    alignItems: 'center',
+    borderColor: EStyleSheet.value('$primaryText') + '40',
+    paddingVertical: 5,
+    width: '90%',
   },
 });

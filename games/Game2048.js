@@ -19,28 +19,27 @@ import {initPalette} from '../services/initApp/initApp';
 import {useFocusEffect} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
+import {themes} from './themes';
+import {ButtonElement} from '../components/Reusable/ButtonElement';
 
-const colors = {
-  2: '#EEE4DA',
-  4: '#EDE0C8',
-  8: '#F2B179',
-  16: '#F59563',
-  32: '#F67C5F',
-  64: '#F65E3B',
-  128: '#EDCF72',
-  256: '#EDCC61',
-  512: '#EDC850',
-  1024: '#EDC53F',
-  2048: '#EDC22E',
-  4096: 'red',
-  8192: 'red',
-  16384: 'red',
-  32768: 'red',
-};
+const displayOnlyBoard = [
+  [2, 4, 8, 16],
+  [32, 64, 128, 256],
+  [512, 1024, 2048, 4096],
+  [8192, 16384, 32768, 0],
+];
+const directions = ['right', 'left', 'up', 'down'];
 
-const WINNING_SCORE = +Object.keys(colors)[2]; //2048
-
+const MAX_AUTO_STEPS = 1200;
 const GameBoard = () => {
+  const [theme, setTheme] = useState('colorful');
+  const colors = themes[theme];
+
+  const WINNING_SCORE = +Object.keys(colors)[10]; //2048
+
+  const [autogame, setAutogame] = useState(false); // 0 to activate, false to deactivate. max is MAX_AUTO_STEPS
+  const [isGameOver, setIsGameOver] = useState(false);
+
   const [board, setBoard] = useState([]);
   const [score, setScore] = useState(0);
   const [isWin, setIsWin] = useState(false);
@@ -55,6 +54,22 @@ const GameBoard = () => {
       initializeBoard();
     }, []),
   );
+  //this will play random first steps if autogame is set to 0
+  useEffect(() => {
+    if (autogame === false) return;
+    if (autogame === 0) {
+      const initialBoard = initializeBoard();
+      addRandomTile(initialBoard);
+      addRandomTile(initialBoard);
+      setBoard(initialBoard);
+      setIsPlaying(true);
+    }
+    if (autogame === MAX_AUTO_STEPS || isGameOver) return;
+    setTimeout(() => {
+      setAutogame(prev => prev + 1);
+      handleSwipe(directions[Math.floor(Math.random() * directions.length)]);
+    }, 50);
+  }, [autogame]);
 
   const initializeBoard = () => {
     const initialBoard = Array(4)
@@ -65,12 +80,14 @@ const GameBoard = () => {
     setBoard(initialBoard);
     setScore(0);
     setIsWin(false);
-    const boardInstance = {board: initialBoard, score: 0};
+    setIsGameOver(false);
+    const boardInstance = {board: initialBoard, score: 0, didLose: false};
     setHistory([boardInstance]);
     historyRef.current = [boardInstance];
+    return initialBoard;
   };
 
-  const addRandomTile = board => {
+  const checkForEmptyTiles = board => {
     const emptyTiles = [];
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -81,6 +98,16 @@ const GameBoard = () => {
     }
 
     if (emptyTiles.length > 0) {
+      return emptyTiles;
+    } else {
+      return false;
+    }
+  };
+
+  const addRandomTile = board => {
+    const emptyTiles = checkForEmptyTiles(board);
+
+    if (emptyTiles !== false) {
       const randomIndex = Math.floor(Math.random() * emptyTiles.length);
       const tile = emptyTiles[randomIndex];
       board[tile.x][tile.y] = Math.random() < 0.9 ? 2 : 4;
@@ -140,10 +167,10 @@ const GameBoard = () => {
     if (!isEqual(board, newBoard)) {
       addRandomTile(newBoard);
       setBoard(newBoard);
-
+      const didLose = checkLose(newBoard);
       const nextHistory = [
         ...history,
-        {board: newBoard, score: score + addedValue},
+        {board: newBoard, score: score + addedValue, didLose},
       ];
       historyRef.current = nextHistory;
       setHistory(prevHistory => {
@@ -168,6 +195,36 @@ const GameBoard = () => {
     return false;
   };
 
+  const checkLose = board => {
+    let lose = true;
+    const emptyTiles = checkForEmptyTiles(board);
+    if (emptyTiles) {
+      lose = false;
+    } else {
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          const cellValue = board[i][j];
+          if (
+            (i > 0 && board[i - 1][j] === cellValue) ||
+            (i < 3 && board[i + 1][j] === cellValue) ||
+            (j > 0 && board[i][j - 1] === cellValue) ||
+            (j < 3 && board[i][j + 1] === cellValue)
+          ) {
+            lose = false;
+            break;
+          }
+        }
+        if (!lose) break;
+      }
+      if (lose) {
+        setIsGameOver(true);
+        // setIsGameOver(true);
+        setAutogame(MAX_AUTO_STEPS);
+      }
+    }
+    return lose;
+  };
+
   const ScoreView = () => {
     return (
       <View style={styles.scoreView}>
@@ -180,7 +237,7 @@ const GameBoard = () => {
           </TextElement>
         </View>
         {isWin && (
-          <TextElement customStyle={styles.winText}>You Win!</TextElement>
+          <TextElement customStyle={styles.winText}>{t('win')}</TextElement>
         )}
       </View>
     );
@@ -222,6 +279,7 @@ const GameBoard = () => {
         const prevScore = history[history.length - 2].score;
         setScore(prevScore);
         setBoard(prevBoard);
+        setIsGameOver(history[history.length - 2].didLose);
         setHistory(prevHistory => prevHistory.slice(0, -1));
         setIsWin(checkWinCondition(prevBoard));
       }
@@ -244,6 +302,7 @@ const GameBoard = () => {
         const nextScore = historyRef.current[history.length].score;
         setBoard(nextBoard);
         setScore(nextScore);
+        setIsGameOver(historyRef.current[history.length].didLose);
         setHistory(prevHistory => {
           return [...historyRef.current].slice(
             0,
@@ -317,37 +376,149 @@ const GameBoard = () => {
     return true;
   };
 
+  const [focusOnTheme, setFocusOnTheme] = useState();
+
   const renderBoard = () => {
     return (
       <View style={styles.board}>
         {isPlaying ? (
-          board.map((row, rowIndex) => (
-            <View key={rowIndex} style={styles.row}>
-              {row.map((cell, columnIndex) => {
-                const cellValue = cell !== 0 ? cell.toString() : '';
-                const backgroundColor = colors[cellValue] || colors.undefined;
+          <>
+            {board.map((row, rowIndex) => (
+              <View key={rowIndex} style={styles.row}>
+                {row.map((cell, columnIndex) => {
+                  const cellValue = cell !== 0 ? cell.toString() : '';
+                  const backgroundColor =
+                    colors[cellValue]?.background || colors.undefined;
+                  const textColor = colors[cellValue]?.text || colors.undefined;
 
-                return (
-                  <Tile
-                    key={columnIndex}
-                    value={cellValue}
-                    backgroundColor={backgroundColor}
-                  />
-                );
-              })}
-            </View>
-          ))
+                  return (
+                    <Tile
+                      key={columnIndex}
+                      value={cellValue}
+                      backgroundColor={backgroundColor}
+                      textColor={textColor}
+                    />
+                  );
+                })}
+              </View>
+            ))}
+            {
+              <View
+                style={{
+                  position: 'absolute',
+                  flex: 1,
+                  width: '100%',
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2,
+                  opacity: isGameOver ? 0.5 : 0,
+                  backgroundColor: 'blue',
+                }}>
+                <TextElement changeFontByRem={1.5}>
+                  Give it another go!
+                </TextElement>
+              </View>
+            }
+          </>
         ) : (
-          <TextElement changeFontByRem={2}>2048</TextElement>
+          <>
+            {displayOnlyBoard.map((row, rowIndex) => (
+              <View key={rowIndex} style={styles.row}>
+                {row.map((cell, columnIndex) => {
+                  const cellValue = cell !== 0 ? cell.toString() : '';
+                  const backgroundColor =
+                    colors[cellValue]?.background || colors.undefined;
+                  const textColor = colors[cellValue]?.text || colors.undefined;
+
+                  return (
+                    <Tile
+                      key={columnIndex}
+                      value={cellValue}
+                      backgroundColor={backgroundColor}
+                      textColor={textColor}
+                      displayOnlyBoard
+                    />
+                  );
+                })}
+              </View>
+            ))}
+            <View
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: focusOnTheme ? '#ffffff80' : '#fffffff0',
+              }}>
+              <TextElement changeFontByRem={2} customStyle={{color: '#000000'}}>
+                2048
+              </TextElement>
+              <TextElement
+                changeFontByRem={0.2}
+                customStyle={{
+                  color: focusOnTheme ? '#00000000' : '#000000',
+                  alignSelf: 'flex-start',
+                  paddingHorizontal: 10,
+                }}>
+                {t('theme')}
+              </TextElement>
+              <View
+                style={{
+                  flexWrap: 'wrap',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  // opacity: focusOnTheme ? 0.2 : 1,
+                }}>
+                {Object.entries(themes).map(([themeName, thisTheme], index) => (
+                  <ButtonElement
+                    key={themeName}
+                    onLongPress={() => setFocusOnTheme(prev => !prev)}
+                    customStyle={{
+                      width: undefined,
+                      height: 40,
+                      backgroundColor: focusOnTheme
+                        ? themeName === theme
+                          ? thisTheme[256].background
+                          : thisTheme[256].background + '80'
+                        : thisTheme[256].background,
+                      color: focusOnTheme
+                        ? themeName === theme
+                          ? thisTheme[256].text
+                          : 'transparent'
+                        : thisTheme[256].text,
+                      borderWidth: 1,
+                      paddingHorizontal: 10,
+                      borderColor:
+                        themeName === theme
+                          ? thisTheme[512].background
+                          : thisTheme[256].background,
+                    }}
+                    title={themeName.toUpperCase()}
+                    onPress={() => setTheme(themeName)}
+                  />
+                ))}
+              </View>
+            </View>
+          </>
         )}
       </View>
     );
   };
 
-  const Tile = ({value, backgroundColor}) => {
+  const Tile = ({value, backgroundColor, textColor, displayOnlyBoard}) => {
     return (
       <View style={[styles.cell, {backgroundColor}]}>
-        <Text style={styles.cellText}>{value}</Text>
+        <TextElement
+          changeFontByRem={-0.1}
+          customStyle={{
+            ...styles.cellText,
+            color: textColor ? textColor : '#776E65',
+          }}>
+          {displayOnlyBoard ? (focusOnTheme ? '' : value) : value}
+        </TextElement>
       </View>
     );
   };
