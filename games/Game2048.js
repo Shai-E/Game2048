@@ -5,20 +5,9 @@ import {
   TouchableOpacity,
   I18nManager,
   Pressable,
-  UIManager,
-  Platform,
-  LayoutAnimation,
 } from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  ZoomIn,
-  FadeInDown,
-  FadeInUp,
-  FadeInRight,
-  FadeInLeft,
-} from 'react-native-reanimated';
+import Animated, {ZoomIn} from 'react-native-reanimated';
 import {TextElement} from '../components/Reusable/TextElement';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {initPalette} from '../services/initApp/initApp';
@@ -27,12 +16,7 @@ import {useTranslation} from 'react-i18next';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {themes} from './themes';
 import {ButtonElement} from '../components/Reusable/ButtonElement';
-// if (
-//   Platform.OS === 'android' &&
-//   UIManager.setLayoutAnimationEnabledExperimental
-// ) {
-//   UIManager.setLayoutAnimationEnabledExperimental(true);
-// }
+
 const displayOnlyBoard = [
   [2, 4, 8, 16],
   [32, 64, 128, 256],
@@ -40,13 +24,6 @@ const displayOnlyBoard = [
   [8192, 16384, 32768, 0],
 ];
 // const directions = ['right', 'left', 'up', 'down'];
-// tryyyyyy
-// const fadeInAnimationsByDirection = {
-//   up: FadeInDown,
-//   down: FadeInUp,
-//   left: FadeInRight,
-//   right: FadeInLeft,
-// };
 
 const MAX_AUTO_STEPS = 1200;
 
@@ -605,14 +582,6 @@ const GameBoard = () => {
           }}>
           {displayOnlyBoard ? (focusOnTheme ? '' : value) : value}
         </TextElement>
-        {/* <TextElement
-          changeFontByRem={-0.1}
-          customStyle={{
-            ...styles.cellText,
-            color: textColor ? textColor : '#776E65',
-          }}>
-          {displayOnlyBoard ? '' : cellIndex}
-        </TextElement> */}
       </Animated.View>
     );
   };
