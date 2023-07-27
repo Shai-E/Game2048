@@ -1,10 +1,13 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   I18nManager,
   Pressable,
+  UIManager,
+  Platform,
+  LayoutAnimation,
 } from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
@@ -24,7 +27,12 @@ import {useTranslation} from 'react-i18next';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {themes} from './themes';
 import {ButtonElement} from '../components/Reusable/ButtonElement';
-
+// if (
+//   Platform.OS === 'android' &&
+//   UIManager.setLayoutAnimationEnabledExperimental
+// ) {
+//   UIManager.setLayoutAnimationEnabledExperimental(true);
+// }
 const displayOnlyBoard = [
   [2, 4, 8, 16],
   [32, 64, 128, 256],
@@ -33,6 +41,12 @@ const displayOnlyBoard = [
 ];
 // const directions = ['right', 'left', 'up', 'down'];
 // tryyyyyy
+// const fadeInAnimationsByDirection = {
+//   up: FadeInDown,
+//   down: FadeInUp,
+//   left: FadeInRight,
+//   right: FadeInLeft,
+// };
 
 const MAX_AUTO_STEPS = 1200;
 
@@ -446,7 +460,7 @@ const GameBoard = () => {
 
                   return (
                     <Tile
-                      key={columnIndex}
+                      key={cellIndex || columnIndex + ':' + rowIndex}
                       value={cellValue}
                       backgroundColor={backgroundColor}
                       textColor={textColor}
@@ -570,7 +584,6 @@ const GameBoard = () => {
       </View>
     );
   };
-  const tilePositions = useRef({}).current;
 
   const Tile = ({
     value,
@@ -580,44 +593,10 @@ const GameBoard = () => {
     cellIndex,
     coords,
   }) => {
-    const fadeInAnimationsByDirection = {
-      up: FadeInDown,
-      down: FadeInUp,
-      left: FadeInRight,
-      right: FadeInLeft,
-    };
-
-    if (!tilePositions[coords.rowIndex + '-' + coords.columnIndex]) {
-      tilePositions[coords.rowIndex + '-' + coords.columnIndex] = {
-        x: useSharedValue(0),
-        y: useSharedValue(0),
-      };
-    }
-    const position = tilePositions[coords.rowIndex + '-' + coords.columnIndex];
-
-    const animatedStyle = useAnimatedStyle(() => ({
-      transform: [
-        {translateX: position.x.value},
-        {translateY: position.y.value},
-      ],
-    }));
-
     return (
       <Animated.View
-        entering={
-          cellIndex == counter.current
-            ? ZoomIn.delay(300)
-            : history[history.length - 1]?.board[coords.rowIndex][
-                coords.columnIndex
-              ]?.index !==
-                history[history.length - 2]?.board[coords.rowIndex][
-                  coords.columnIndex
-                ]?.index &&
-              fadeInAnimationsByDirection[
-                historyRef.current[historyRef.current.length - 1]?.direction
-              ]?.duration(200)
-        }
-        style={[styles.cell, {backgroundColor}, animatedStyle]}>
+        entering={cellIndex == counter.current && ZoomIn.delay(100)}
+        style={[styles.cell, {backgroundColor}]}>
         <TextElement
           changeFontByRem={-0.1}
           customStyle={{
