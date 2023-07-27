@@ -202,7 +202,7 @@ const GameBoard = () => {
       setBoard(newBoard);
       const didLose = checkLose(newBoard);
       const nextHistory = [
-        ...historyRef.current,
+        ...history,
         {board: newBoard, score: score + addedValue, didLose, direction},
       ];
       historyRef.current = nextHistory;
