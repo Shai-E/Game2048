@@ -17,6 +17,7 @@ export const ButtonElement = ({
   customStyle,
   accessibilityLabel,
   changeFontByRem,
+  preventDefaultStyle,
 }) => {
   const defaultTextColor = buttonColor || '$highlight';
   const presets = EStyleSheet.create({
@@ -52,8 +53,10 @@ export const ButtonElement = ({
       color: customStyle?.color || '$defaultTextColor' || undefined,
       fontWeight: customStyle?.fontWeight || 'normal',
       textAlign: customStyle?.textAlign || 'auto',
+      ...(customStyle?.fontSize ? {fontSize: customStyle?.fontSize} : {}),
     },
   });
+
   const accessibilityID = defineAccessibilityId(accessibilityLabel);
   return (
     <TouchableOpacity
@@ -62,7 +65,7 @@ export const ButtonElement = ({
       onLongPress={onLongPress}>
       <View
         style={{
-          ...presets.buttonContainerDefault,
+          ...(preventDefaultStyle ? {} : presets.buttonContainerDefault),
           ...customStyle,
           ...(outline
             ? presets.buttonContainerOutline

@@ -1,10 +1,11 @@
 import TopTabNavigator from '../components/Reusable/TopTabNavigator';
 import GenericExampleScreen from '../containers/ExampleScreens/Example.js';
 import GameBoard from '../games/Game2048';
+import {LeaderBoard} from '../games/LeaderBoard';
 
 const topTabs = [
   {
-    Component: GenericExampleScreen.bind(this, {title: 'Leader Board'}),
+    Component: LeaderBoard.bind(this, {title: 'Leader Board'}),
     tabName: 'Leader Board',
   },
   {Component: GameBoard.bind(this, {title: '2048'}), tabName: '2048'},

@@ -23,6 +23,7 @@
     "score": "Score",
     "moves": "Moves",
     "win": "You Win!",
-    "theme": "Theme"
+    "theme": "Theme",
+    "try.again": "Give it another go!"
   }
 }
