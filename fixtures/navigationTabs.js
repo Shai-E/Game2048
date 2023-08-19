@@ -17,26 +17,26 @@ export const useTabs = () => {
       icon: 1,
       accessibilityLabel: 'appSettings',
     },
-    {
-      tab: t('tabs.options'),
-      section: 'tab-bar',
-      route: 'Options',
-      icon: 3,
-      accessibilityLabel: 'appOptions',
-    },
-    {
-      tab: t('tabs.search'),
-      section: 'tab-bar',
-      route: 'Search',
-      icon: 2,
-      accessibilityLabel: 'appSearch',
-    },
-    {
-      tab: t('tabs.menu'),
-      section: 'drawer',
-      route: 'Menu',
-      icon: 4,
-      accessibilityLabel: 'appMenu',
-    },
+    // {
+    //   tab: t('tabs.options'),
+    //   section: 'tab-bar',
+    //   route: 'Options',
+    //   icon: 3,
+    //   accessibilityLabel: 'appOptions',
+    // },
+    // {
+    //   tab: t('tabs.search'),
+    //   section: 'tab-bar',
+    //   route: 'History',
+    //   icon: 2,
+    //   accessibilityLabel: 'appSearch',
+    // },
+    // {
+    //   tab: t('tabs.menu'),
+    //   section: 'drawer',
+    //   route: 'Menu',
+    //   icon: 4,
+    //   accessibilityLabel: 'appMenu',
+    // },
   ];
 };

@@ -102,14 +102,14 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.trading"
+    namespace "com.Game2048"
     defaultConfig {
-        applicationId "com.trading"
+        applicationId "com.Game2048"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resValue "string", "build_config_package", "com.trading" // react-native-config configuration
+        resValue "string", "build_config_package", "com.Game2048" // react-native-config configuration
     }
 
     splits {

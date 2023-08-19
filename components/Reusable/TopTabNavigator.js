@@ -1,4 +1,11 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   I18nManager,
   Platform,
@@ -133,12 +140,17 @@ const TopTabScreens = ({
           canmomentum.current = false;
         }}>
         {topTabKeysArray.map((tabName, index) => {
+          console.log(index, currentTab, index === currentTab);
           const Screen = topTabs[index].Component;
           return (
             <View
               key={tabName}
               style={{height: '100%', width: DEFAULT_BAR_WIDTH}}>
-              <Screen navigation={navigation} route={route} />
+              <Screen
+                navigation={navigation}
+                route={route}
+                isFocused={index === currentTab}
+              />
             </View>
           );
         })}
@@ -258,7 +270,7 @@ const TopTabNavigator = ({navigation, route, topTabs, style, initialTab}) => {
       };
     }, []),
   );
-
+  console.log(currentTab);
   return (
     <ScreenContainer
       customStyle={{justifyContent: 'flex-start', width: DEFAULT_BAR_WIDTH}}>

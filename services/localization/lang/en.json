@@ -1,6 +1,6 @@
 {
   "en": {
-    "change.language": "Change Language",
+    "change.language": "שנה שפה לעברית",
     "set.loading": "Set Loader for 3 Seconds",
     "open.modal": "Open Modal",
     "navigate.to.settings": "Navigate to Settings",
@@ -24,6 +24,12 @@
     "moves": "Moves",
     "win": "You Win!",
     "theme": "Theme",
-    "try.again": "Give it another go!"
+    "try.again": "Give it another go!",
+    "dark": "Dark mode",
+    "light": "Light mode",
+    "undo": "Undo",
+    "redo": "Redo",
+    "start": "Start",
+    "restart": "Restart"
   }
 }

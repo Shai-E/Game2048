@@ -4,11 +4,13 @@ import {combineReducers} from 'redux';
 // Reducers:
 import appSlice from './reducers/appSlice';
 import tabsSlice from './reducers/tabsSlice';
+import game2048Slice from './reducers/game2048Slice';
 
 // Flipper - Debuuger
 const rootReducer = combineReducers({
   appSlice,
   tabsSlice,
+  game2048Slice,
 });
 const middlewares = [
   /* other middlewares */

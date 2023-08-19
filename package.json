@@ -1,5 +1,5 @@
 {
-  "name": "trading",
+  "name": "Game2048",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -14,8 +14,8 @@
     "fix": "cd android && touch local.properties && echo \"sdk.dir = /Users/$(whoami)/Library/Android/sdk\" > local.properties && cd ..",
     "fix-orientation2": "sed -i '' 's/compileSdkVersion 23/compileSdkVersion 32/g; s/buildToolsVersion \"23.0.1\"/buildToolsVersion \"30.0.1\"/g; s/targetSdkVersion 22/targetSdkVersion 32/g' ./node_modules/react-native-orientation/android/build.gradle",
     "fix-orientation": "sed -i '' '/dependencies {/,/}/ s/compile/implementation/g' ./node_modules/react-native-orientation/android/build.gradle",
-    "xcode": "cd ios && open trading.xcodeproj && cd ..",
-    "simulator": "cd ios && xcodebuild -project trading.xcodeproj -scheme trading -destination \"platform=iOS Simulator,name=iPhone X\" && cd ..",
+    "xcode": "cd ios && open Game2048.xcodeproj && cd ..",
+    "simulator": "cd ios && xcodebuild -project Game2048.xcodeproj -scheme Game2048 -destination \"platform=iOS Simulator,name=iPhone X\" && cd ..",
     "build-os": "cd android && ./gradlew clean && cd .. && cd ios && rm -f Podfile.lock && pod install && cd ..",
     "restart": "react-native start --reset-cache",
     "gen": "npm run kill-metro && npm run remove-packages && npm i && npm run fix && npm run fix-orientation && npm run build-os  && npm run restart && npm run connect-metro",

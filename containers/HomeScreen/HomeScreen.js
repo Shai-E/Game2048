@@ -61,38 +61,16 @@ const HomeScreen = () => {
 
   return (
     <ScreenContainer>
-      <TextElement>{t('screens.home')}</TextElement>
-      <ButtonElement title={t('change.language')} onPress={changeLanguage} />
-      <ButtonElement title={t('set.loading')} onPress={setLoading} />
-      <ButtonElement title={t('open.modal')} onPress={openModal} />
       <ButtonElement
-        title={t('navigate.to.settings')}
-        onPress={navigateToOptions}
+        title={t('change.language')}
+        onPress={changeLanguage}
+        customStyle={{marginVertical: 5}}
       />
       <ButtonElement
-        title={t('change.theme') + ': ' + isDarkMode}
+        title={t('change.theme') + ': ' + t(isDarkMode ? 'light' : 'dark')}
         onPress={handleThemeChange}
+        customStyle={{marginVertical: 5}}
       />
-      <ButtonElement title={t('checkout.tab')} onPress={navigateToOptions2} />
-      <TextElement>
-        {t('visit.link')}:{' '}
-        <LinkElement
-          onPress={() => {
-            Linking.openURL('https://www.google.co.il');
-          }}>
-          {t('in.browser')}
-        </LinkElement>{' '}
-        /{' '}
-        <LinkElement
-          onPress={() => {
-            navigation.navigate('user', {
-              screen: 'webview',
-              params: {uri: 'https://www.google.co.il'},
-            });
-          }}>
-          {t('inside.app')}
-        </LinkElement>
-      </TextElement>
     </ScreenContainer>
   );
 };

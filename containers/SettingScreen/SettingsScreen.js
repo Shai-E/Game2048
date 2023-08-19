@@ -5,6 +5,7 @@ import {initPalette} from '../../services/initApp/initApp';
 
 const SettingsScreen = ({}) => {
   const {t} = useTranslation();
+
   return (
     <ScreenContainer>
       <TextElement>{t('screens.settings')}</TextElement>

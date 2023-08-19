@@ -1,7 +1,7 @@
 {
   "he": {
     "home.screen": "דף הבית",
-    "change.language": "שנה שפה",
+    "change.language": "Change language to English",
     "set.loading": "הפעל ספינר ל-3 שניות",
     "open.modal": "פתח מודל",
     "navigate.to.settings": "נווט להגדרות",
@@ -25,6 +25,12 @@
     "moves": "צעדים",
     "win": "ניצחת!",
     "theme": "ערכת נושא",
-    "try.again": "נסה שוב!"
+    "try.again": "נסה שוב!",
+    "dark": "ערכת נושא כהה",
+    "light": "ערכת נושא בהירה",
+    "undo": "בטל",
+    "redo": "שחזר",
+    "start": "התחל",
+    "restart": "התחל מחדש"
   }
 }

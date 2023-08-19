@@ -18,6 +18,7 @@ import {useTabs} from '../../fixtures/navigationTabs';
 import {useTranslation} from 'react-i18next';
 import {initPalette} from '../../services/initApp/initApp';
 import {useColors} from '../../services/customHook/useColors';
+import {TextElement} from '../Reusable/TextElement';
 
 const AppTabBar = () => {
   initPalette();
@@ -55,6 +56,15 @@ const AppTabBar = () => {
               // alignItems: 'center',
             },
           ]}>
+          <TextElement
+            customStyle={{
+              position: 'absolute',
+              textAlign: 'center',
+              width: '100%',
+              fontWeight: 'bold',
+            }}>
+            2048
+          </TextElement>
           {tabs.map(({tab, route, section, icon, accessibilityLabel}) => (
             <Tab
               key={tab}
