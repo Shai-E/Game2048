@@ -28,6 +28,11 @@ import useTimeCount from './useCountUp';
 import {useDispatch, useSelector} from 'react-redux';
 import {setActiveGame} from '../../store/reducers/game2048Slice';
 import {useColors} from '../../services/customHook/useColors';
+import {
+  clearStorage,
+  getFromStorage,
+  saveToStorage,
+} from '../../services/utils/storage/setAsyncStorage';
 const directions = ['right', 'left', 'up', 'down'];
 
 const MAX_AUTO_STEPS = 1200;
@@ -39,7 +44,7 @@ const GameBoard = () => {
 
   const WINNING_SCORE = +Object.keys(colors)[10]; //2048
 
-  const [autogame, setAutogame] = useState(false); // 0 to activate, false to deactivate. max is MAX_AUTO_STEPS
+  const [autogame, setAutogame] = useState(0); // 0 to activate, false to deactivate. max is MAX_AUTO_STEPS
   const [isGameOver, setIsGameOver] = useState(false);
 
   const [board, setBoard] = useState([]);
@@ -68,46 +73,65 @@ const GameBoard = () => {
       initTimer: initTimer.current,
     });
   useEffect(() => {
-    initializeBoard();
-    if (activeGame) {
-      // setIsPlaying(true);
-      const lastBoard =
-        activeGame.gameHistory[activeGame.gameHistory.length - 1];
-      setBoard(lastBoard.board);
-      setScore(lastBoard.score);
-      setHistory(activeGame.gameHistory);
-      historyRef.current = activeGame.gameHistory;
-      setIsPlaying(true);
-      setGameId(activeGame.date);
-      // console.log(lastBoard.timeCountUp, 'before set');
-      if (lastBoard.timeCountUp) {
-        initTimer.current = +lastBoard.timeCountUp;
-        restartCount(+lastBoard.timeCountUp);
+    (async () => {
+      console.log(isGameOver);
+      const current = await getFromStorage('Current');
+      if (current) {
+        const lastBoard = current[current.length - 1];
+        setBoard(lastBoard.board);
+        setScore(lastBoard.score);
+        setHistory(current);
+        historyRef.current = current;
+        setIsPlaying(true);
+        setGameId(lastBoard.date);
+        // console.log(lastBoard.timeCountUp, 'before set');
+        if (lastBoard.timeCountUp) {
+          initTimer.current = +lastBoard.timeCountUp;
+          restartCount(+lastBoard.timeCountUp);
+        }
+      } else {
+        initializeBoard();
       }
-      // console.log(
-      //   Object.keys(
-      //     activeGame.gameHistory[activeGame.gameHistory.length - 1],
-      //   ),
-      //   '["board", "score", "didLose", "direction", timeCountUp]',
-      // );
-    }
+    })();
+    // if (activeGame) {
+    //   // setIsPlaying(true);
+    //   const lastBoard =
+    //     activeGame.gameHistory[activeGame.gameHistory.length - 1];
+    //   setBoard(lastBoard.board);
+    //   setScore(lastBoard.score);
+    //   setHistory(activeGame.gameHistory);
+    //   historyRef.current = activeGame.gameHistory;
+    //   setIsPlaying(true);
+    //   setGameId(activeGame.date);
+    //   // console.log(lastBoard.timeCountUp, 'before set');
+    //   if (lastBoard.timeCountUp) {
+    //     initTimer.current = +lastBoard.timeCountUp;
+    //     restartCount(+lastBoard.timeCountUp);
+    //   }
+    //   // console.log(
+    //   //   Object.keys(
+    //   //     activeGame.gameHistory[activeGame.gameHistory.length - 1],
+    //   //   ),
+    //   //   '["board", "score", "didLose", "direction", timeCountUp]',
+    //   // );
+    // }
 
     //this will play random first steps if autogame is set to 0
     if (autogame !== false) {
-      //   if (autogame === 0) {
-      //     const initialBoard = initializeBoard();
-      //     addRandomTile(initialBoard, setBoard);
-      //     addRandomTile(initialBoard, setBoard);
-      //     setBoard(initialBoard);
-      //     setIsPlaying(true);
-      //   }
-      //   if (autogame === MAX_AUTO_STEPS || isGameOver) return;
-      //   setTimeout(() => {
-      //     setAutogame(prev => prev + 1);
-      //     handleSwipe(directions[Math.floor(Math.random() * directions.length)]);
-      //   }, 50);
+      // if (autogame === 0) {
+      //   const initialBoard = initializeBoard();
+      //   addRandomTile(initialBoard, setBoard, counter);
+      //   addRandomTile(initialBoard, setBoard, counter);
+      //   setBoard(initialBoard);
+      //   setIsPlaying(true);
+      // }
+      // if (autogame === MAX_AUTO_STEPS || isGameOver) return;
+      // setTimeout(() => {
+      //   setAutogame(prev => prev + 1);
+      //   handleSwipe(directions[Math.floor(Math.random() * directions.length)]);
+      // }, 50);
     }
-  }, [activeGame, autogame, initTimer.current, isDarkMode]);
+  }, [activeGame, autogame, initTimer.current, isDarkMode, isGameOver]);
 
   const handleSaveGame = () => saveGame(historyRef, player, gameId);
 
@@ -193,6 +217,7 @@ const GameBoard = () => {
     initTimer.current = 0;
     toggleCount(true);
     setGameId(Date.now());
+    clearStorage(['Current']);
   };
   const RestartButton = ({handleRestart}) => {
     return (

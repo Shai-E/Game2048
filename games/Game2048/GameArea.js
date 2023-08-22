@@ -1,4 +1,4 @@
-import {Pressable, TextInput, View} from 'react-native';
+import {TextInput, View} from 'react-native';
 import {t} from 'i18next';
 import {TextElement} from '../../components/Reusable/TextElement';
 import {ButtonElement} from '../../components/Reusable/ButtonElement';
@@ -34,7 +34,7 @@ const GameArea = ({
   setHistory,
   history,
 }) => {
-  const [focusOnTheme, setFocusOnTheme] = useState();
+  const [focusOnTheme, setFocusOnTheme] = useState(true);
   const [displayThemes, setDisplayThemes] = useState(false);
   const {fillSecondary} = useColors();
   return (
@@ -112,7 +112,10 @@ const GameArea = ({
                     ([themeName, thisTheme], index) => (
                       <ButtonElement
                         key={themeName}
-                        onLongPress={() => setFocusOnTheme(prev => !prev)}
+                        onLongPress={() => {
+                          // setFocusOnTheme(prev => !prev);
+                          setTheme(themeName);
+                        }}
                         customStyle={{
                           width: undefined,
                           height: 40,

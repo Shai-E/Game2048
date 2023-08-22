@@ -1,5 +1,6 @@
 import {I18nManager} from 'react-native';
 import {
+  clearStorage,
   getFromStorage,
   saveToStorage,
 } from '../../services/utils/storage/setAsyncStorage';
@@ -225,6 +226,7 @@ export const handleSwipe = (
       },
     ];
     historyRef.current = nextHistory;
+    saveToStorage('Current', nextHistory);
     setHistory(prevHistory => {
       return nextHistory;
     });
@@ -310,6 +312,7 @@ export const checkLose = (
     if (lose) {
       setIsGameOver(true);
       setAutogame(MAX_AUTO_STEPS);
+      clearStorage(['Current']);
     }
   }
   return lose;
