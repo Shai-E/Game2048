@@ -60,12 +60,12 @@ const GameArea = ({
               pointerEvents: isGameOver ? 'auto' : 'box-none',
             }}>
             <TextElement changeFontByRem={1.5}>{t('try.again')}</TextElement>
-            <TextInput value={player} onChangeText={setPlayer} />
+            {/* <TextInput value={player} onChangeText={setPlayer} />
             <ButtonElement
               title={t('save')}
               outline={true}
               onPress={saveGame}
-            />
+            /> */}
           </HoverBoardContainer>
         </>
       ) : (
