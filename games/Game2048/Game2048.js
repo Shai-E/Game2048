@@ -74,7 +74,6 @@ const GameBoard = () => {
     });
   useEffect(() => {
     (async () => {
-      console.log(isGameOver);
       const current = await getFromStorage('Current');
       if (current) {
         const lastBoard = current[current.length - 1];
@@ -212,12 +211,10 @@ const GameBoard = () => {
   const handleRestart = () => {
     setIsGameOver(true);
     initializeBoard();
-    restartCount();
     dispatch(setActiveGame(null));
-    initTimer.current = 0;
-    toggleCount(true);
     setGameId(Date.now());
     clearStorage(['Current']);
+    setIsPlaying(false);
   };
   const RestartButton = ({handleRestart}) => {
     return (
@@ -233,6 +230,8 @@ const GameBoard = () => {
   };
   const handleStart = () => {
     setIsPlaying(true);
+    restartCount();
+    initTimer.current = 0;
     toggleCount(true);
     initializeBoard();
   };

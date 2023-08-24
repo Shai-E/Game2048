@@ -107,7 +107,7 @@ android {
         applicationId "com.Game2048"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 3
         versionName "1.0"
         resValue "string", "build_config_package", "com.Game2048" // react-native-config configuration
     }
